@@ -37,19 +37,17 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f4f4f5; /* light slate */
+            background-color: #f4f4f5;
         }
-        .dark body { background-color: #0f172a; } /* dark slate */
+        .dark body { background-color: #0f172a; }
         .font-display { font-family: 'Outfit', sans-serif; }
         
-        /* Modern Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
-        /* Glassmorphism utilities */
         .glass-panel {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(16px);
@@ -61,7 +59,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        /* D3 Tree Styles */
         .node { cursor: pointer; }
         .node circle {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -97,7 +94,6 @@
             stroke-linecap: round;
         }
         
-        /* Background Pattern */
         .bg-pattern {
             background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
             background-size: 20px 20px;
@@ -107,7 +103,6 @@
 </head>
 <body class="text-slate-800 dark:text-slate-200 transition-colors duration-300 antialiased selection:bg-brand-500 selection:text-white">
 
-    <!-- Sticky Header -->
     <header class="fixed top-0 w-full z-50 glass-panel shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
@@ -115,20 +110,18 @@
                     <i class="fa-solid fa-staff-snake text-xl"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl sm:text-2xl font-extrabold font-display tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                    <h1 class="text-lg sm:text-2xl font-extrabold font-display tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
                         National Health Mission
                     </h1>
                 </div>
             </div>
 
             <div class="flex items-center gap-3">
-                <!-- Search -->
                 <div class="hidden md:flex relative group">
                     <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors"></i>
                     <input type="text" id="searchInput" placeholder="Search facilities, tiers..." 
                            class="w-64 pl-9 pr-4 py-2 text-sm rounded-full border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all backdrop-blur-sm shadow-inner">
                 </div>
-                <!-- Theme Toggle -->
                 <button id="themeToggle" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-emerald-600 transition-all shadow-sm">
                     <i class="fa-solid fa-moon dark:hidden"></i>
                     <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
@@ -139,10 +132,21 @@
 
     <main class="pt-24 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
 
-        <!-- 1. INTERACTIVE TREE SECTION -->
         <section class="flex flex-col rounded-3xl bg-white dark:bg-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-black/20 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
-            <!-- Tree Header/Controls -->
-            <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 flex flex-wrap items-center justify-between gap-4">
+            <!-- Tree Viewport (Map first) -->
+            <div id="treeContainer" class="relative w-full h-[500px] bg-slate-50 dark:bg-slate-900 bg-pattern overflow-hidden cursor-grab active:cursor-grabbing">
+                <div class="absolute top-4 left-4 z-10 glass-panel px-3 py-2 rounded-xl flex flex-col gap-1.5 text-[10px] font-bold uppercase tracking-wider shadow-sm pointer-events-none">
+                    <div class="flex items-center gap-2 text-purple-700 dark:text-purple-400"><div class="w-2.5 h-2.5 rounded-full bg-purple-500"></div> Tier 5 (Apex)</div>
+                    <div class="flex items-center gap-2 text-blue-700 dark:text-blue-400"><div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div> Tier 4 (Secondary)</div>
+                    <div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-400"><div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div> Tier 3 (Primary)</div>
+                    <div class="flex items-center gap-2 text-orange-700 dark:text-orange-400"><div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div> Tier 2 (Sub-Centre)</div>
+                    <div class="flex items-center gap-2 text-pink-700 dark:text-pink-400"><div class="w-2.5 h-2.5 rounded-full bg-pink-500"></div> Tier 1 (Grassroots)</div>
+                </div>
+                <svg id="treeSvg" class="w-full h-full block"></svg>
+            </div>
+
+            <!-- Tree Header/Controls Below the Map -->
+            <div class="px-5 py-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <h2 class="text-lg font-bold font-display flex items-center gap-2 text-slate-800 dark:text-white">
                         <i class="fa-solid fa-network-wired text-emerald-500"></i>
@@ -169,36 +173,7 @@
                 </div>
             </div>
 
-            <!-- Mobile Two-Finger Note -->
-            <div class="md:hidden bg-amber-50 dark:bg-amber-900/30 border-b border-amber-100 dark:border-amber-800 px-4 py-2 text-center">
-                <p class="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wide flex items-center justify-center gap-1.5">
-                    <i class="fa-solid fa-hand-dots text-lg"></i> Use two fingers to move the map
-                </p>
-            </div>
-
-            <!-- Tree Viewport -->
-            <div id="treeContainer" class="relative w-full h-[500px] bg-slate-50 dark:bg-slate-900 bg-pattern overflow-hidden cursor-grab active:cursor-grabbing">
-                
-                <!-- Two-finger pan warning overlay (Google Maps Style) -->
-                <div id="touchWarning" class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/30 dark:bg-black/50 backdrop-blur-[2px] opacity-0 pointer-events-none transition-opacity duration-300">
-                    <div class="bg-white dark:bg-slate-800 px-5 py-4 rounded-2xl shadow-xl flex flex-col items-center gap-2 border border-slate-200 dark:border-slate-700 transform scale-95">
-                        <i class="fa-solid fa-hand-dots text-3xl text-brand-500 animate-pulse"></i>
-                        <span class="text-sm font-bold text-slate-700 dark:text-slate-200">Use two fingers to move the map</span>
-                    </div>
-                </div>
-
-                <!-- Tiers Legend -->
-                <div class="absolute top-4 left-4 z-10 glass-panel px-3 py-2 rounded-xl flex flex-col gap-1.5 text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                    <div class="flex items-center gap-2 text-purple-700 dark:text-purple-400"><div class="w-2.5 h-2.5 rounded-full bg-purple-500"></div> Tier 5 (Apex)</div>
-                    <div class="flex items-center gap-2 text-blue-700 dark:text-blue-400"><div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div> Tier 4 (Secondary)</div>
-                    <div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-400"><div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div> Tier 3 (Primary)</div>
-                    <div class="flex items-center gap-2 text-orange-700 dark:text-orange-400"><div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div> Tier 2 (Sub-Centre)</div>
-                    <div class="flex items-center gap-2 text-pink-700 dark:text-pink-400"><div class="w-2.5 h-2.5 rounded-full bg-pink-500"></div> Tier 1 (Grassroots)</div>
-                </div>
-                <svg id="treeSvg" class="w-full h-full block"></svg>
-            </div>
-
-            <!-- Facility Inspector Panel (Bottom Drawer) -->
+            <!-- Detail Drawer -->
             <div id="detailDrawer" class="bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 p-5 transition-all">
                 <div id="inspectorEmptyState" class="flex flex-col items-center justify-center py-6 text-slate-400 dark:text-slate-500 text-sm">
                     <i class="fa-solid fa-hand-pointer text-3xl mb-2 text-emerald-500/50 animate-bounce"></i>
@@ -246,14 +221,12 @@
             </div>
         </section>
 
-        <!-- 2. NHM COMPREHENSIVE THEORY (K. PARK REFERENCE) -->
         <section id="nhm-theory" class="space-y-6 scroll-mt-24">
             <div class="text-center max-w-3xl mx-auto mb-10">
                 <span class="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-brand-100 text-brand-700 dark:bg-brand-900/50 dark:text-brand-300 border border-brand-200 dark:border-brand-800">Knowledge Base</span>
                 <h2 class="text-3xl font-extrabold font-display text-slate-900 dark:text-white mt-4">National Health Mission (NHM)</h2>
             </div>
 
-            <!-- NHM Core Vision & Goals -->
             <div class="bg-gradient-to-br from-emerald-900 to-teal-900 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-10 relative overflow-hidden">
                 <div class="absolute top-0 right-0 -mr-16 -mt-16 text-emerald-500/20">
                     <i class="fa-solid fa-staff-snake text-9xl"></i>
@@ -295,7 +268,6 @@
                 </div>
             </div>
 
-            <!-- Strategies Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="glass-panel p-5 rounded-3xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
                     <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
@@ -327,7 +299,6 @@
                 </div>
             </div>
 
-            <!-- National Health Programmes Section -->
             <div class="pt-8 border-b border-slate-200 dark:border-slate-700 pb-2 mt-6">
                 <h3 class="text-xl font-bold font-display text-slate-900 dark:text-white">National Health Programmes under NHM</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Key communicable and non-communicable disease control programs implemented horizontally via the primary healthcare system.</p>
@@ -366,14 +337,12 @@
                 </div>
             </div>
 
-            <!-- Health Workers Cadre Row -->
             <div class="pt-6 border-b border-slate-200 dark:border-slate-700 pb-2">
                 <h3 class="text-xl font-bold font-display text-slate-900 dark:text-white">Health Worker Cadres, Criteria & Detailed Roles</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Detailed profiles of the frontline and clinical workforce driving the NHM, based on Indian Public Health Standards (IPHS) and K. Park guidelines.</p>
             </div>
             
             <div class="flex flex-col space-y-3">
-                <!-- ASHA Accordion -->
                 <details class="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
                     <summary class="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50">
                         <div class="flex items-center gap-4">
@@ -412,7 +381,6 @@
                     </div>
                 </details>
 
-                <!-- AWW Accordion -->
                 <details class="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
                     <summary class="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50">
                         <div class="flex items-center gap-4">
@@ -451,7 +419,6 @@
                     </div>
                 </details>
 
-                <!-- ANM Accordion -->
                 <details class="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
                     <summary class="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50">
                         <div class="flex items-center gap-4">
@@ -490,7 +457,6 @@
                     </div>
                 </details>
 
-                <!-- CHO Accordion -->
                 <details class="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
                     <summary class="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50">
                         <div class="flex items-center gap-4">
@@ -528,7 +494,6 @@
                     </div>
                 </details>
 
-                <!-- MO Accordion -->
                 <details class="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
                     <summary class="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50">
                         <div class="flex items-center gap-4">
@@ -568,7 +533,6 @@
                 </details>
             </div>
 
-            <!-- IPHS Full Criteria Table -->
             <h3 class="text-xl font-bold font-display text-slate-900 dark:text-white pt-6 border-b border-slate-200 dark:border-slate-700 pb-2">Health Facility Standards & Norms</h3>
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-x-auto">
                 <table class="w-full text-left text-sm">
@@ -622,7 +586,7 @@
             </div>
         </section>
 
-        <!-- Official Document PDF Link -->
+        <!-- OFFICIAL MAP PDF BUTTON -->
         <section class="flex justify-center w-full pt-4 pb-2">
             <a href="https://drive.google.com/file/d/1xtVHRVmkNDamf4ImZ9oh63okgOpYhlt-/view?usp=sharing" target="_blank" rel="noopener noreferrer" 
                class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-2xl border-b-4 border-slate-300 dark:border-slate-900 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 active:border-b-0 active:translate-y-1 transition-all w-full sm:w-auto">
@@ -632,15 +596,13 @@
             </a>
         </section>
 
-        <!-- Project Team Footer Section -->
         <section class="pt-6 pb-2 text-center">
             <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Project By</h3>
             <button id="openTeamModal" class="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm text-slate-700 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors mx-auto">
-                <i class="fa-solid fa-users-rectangle text-brand-500 text-lg"></i> View Team Members
+                <i class="fa-solid fa-users-rectangle text-brand-500 text-lg"></i> COMMUNITE MEDICIN PROJECT GMCVZM
             </button>
         </section>
 
-        <!-- FAQ / Questions Section -->
         <section id="nhm-faq" class="pb-8 px-4 sm:px-0 max-w-4xl mx-auto">
             <details class="group bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-black/20 overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
                 <summary class="flex items-center justify-between p-5 md:p-6 cursor-pointer select-none bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700/80 transition-colors">
@@ -650,7 +612,7 @@
                         </div>
                         <div>
                             <h2 class="text-xl font-extrabold font-display text-slate-900 dark:text-white">Questions about NHM</h2>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Frequently asked questions regarding the mission goals, funding, and components.</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Frequently asked questions regarding mission goals, funding, and components.</p>
                         </div>
                     </div>
                     <div class="w-8 h-8 shrink-0 flex items-center justify-center rounded-full bg-white dark:bg-slate-700 text-slate-500 shadow-sm border border-slate-200 dark:border-slate-600 group-open:rotate-180 transition-transform">
@@ -691,7 +653,7 @@
                             </div>
                         </summary>
                         <div class="p-4 pt-0 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
-                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">NHM is a Centrally Sponsored Scheme (CSS) with the following funding pattern between the Central and State governments:<br>• <strong>60:40</strong> for general category states.<br>• <strong>90:10</strong> for North-Eastern and Himalayan States.<br>• <strong>100%</strong> central funding for Union Territories without a legislature.</p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">NHM is a Centrally Sponsored Scheme (CSS) with the following funding pattern between Central and State governments:<br>• <strong>60:40</strong> for general category states.<br>• <strong>90:10</strong> for North-Eastern and Himalayan States.<br>• <strong>100%</strong> central funding for Union Territories without a legislature.</p>
                         </div>
                     </details>
                     
@@ -704,7 +666,7 @@
                         </summary>
                         <div class="p-4 pt-0 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
                             <ul class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed list-disc pl-4 space-y-1">
-                                <li>Reduce Maternal Mortality Rate (MMR) to 1/1000 live births.</li>
+                                <li>Reduce Maternal Mortality Rate (MMR) to 70/100,000 live births.</li>
                                 <li>Reduce Infant Mortality Rate (IMR) to 25/1000 live births.</li>
                                 <li>Reduce Total Fertility Rate (TFR) to 2.1.</li>
                                 <li>Prevent and reduce anaemia in women aged 15-49 years.</li>
@@ -730,7 +692,7 @@
 
     </main>
 
-    <!-- Team Members Popup Modal -->
+    <!-- TEAM MODAL WITHOUT SCROLL -->
     <div id="teamModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
         <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 md:p-6 max-w-md w-full mx-4 shadow-2xl border border-slate-200 dark:border-slate-700 transform scale-95 transition-transform duration-300 relative" id="teamModalContent">
             <button id="closeTeamModal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors">
@@ -744,23 +706,22 @@
             </div>
             <p class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-3 uppercase tracking-wider">COMMUNITE MEDICIN PROJECT GMCVZM</p>
             <div>
-                <ul class="divide-y divide-slate-100 dark:divide-slate-700/50 text-[11px] font-medium text-slate-700 dark:text-slate-300 text-left">
-                    <li class="py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">61. KUPPILI LEENA PATTNAIK</li>
-                    <li class="py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">62. LANKADA VARUN KUMAR</li>
-                    <li class="py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">63. MADDILA SIVAKRISHNA</li>
-                    <li class="py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">64. MADDIMSETTY SUBHASH</li>
-                    <li class="py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">65. MADETI GITANJALI</li>
-                    <li class="py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">66. MANDALA ROHITH</li>
-                    <li class="py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">67. MANTHRI SUKESH KARTHEKEYA</li>
-                    <li class="py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">68. MEESALA SHARMILA RANI</li>
-                    <li class="py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">69. MOHAMMAD NABEEL KHAN</li>
-                    <li class="py-1.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50">70. MOULVI GUFRAN</li>
+                <ul class="grid grid-cols-1 gap-1 text-[11px] font-medium text-slate-700 dark:text-slate-300 text-left">
+                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">61. KUPPILI LEENA PATTNAIK</li>
+                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">62. LANKADA VARUN KUMAR</li>
+                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">63. MADDILA SIVAKRISHNA</li>
+                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">64. MADDIMSETTY SUBHASH</li>
+                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">65. MADETI GITANJALI</li>
+                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">66. MANDALA ROHITH</li>
+                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">67. MANTHRI SUKESH KARTHEKEYA</li>
+                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">68. MEESALA SHARMILA RANI</li>
+                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">69. MOHAMMAD NABEEL KHAN</li>
+                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">70. MOULVI GUFRAN</li>
                 </ul>
             </div>
         </div>
     </div>
 
-    <!-- Script Block for D3 Tree & Logic -->
     <script>
         const RAW_TREE_DATA = {
             id: "tier5_ggh",
@@ -961,7 +922,6 @@
         let currentLayout = "horizontal";
         let svg, g, gLinks, gNodes, zoom, root;
         let selectedNode = null;
-        let warningTimeout;
 
         const tierColors = {
             5: { stroke: "#8b5cf6", fill: "#f3e8ff" },
@@ -980,31 +940,10 @@
 
             zoom = d3.zoom()
                 .scaleExtent([0.2, 3])
-                .filter(function(event) {
-                    if (event.ctrlKey || event.button) return false;
-                    // Option 2 Google Maps Approach: 1-finger scroll passes through, 2-fingers pans map
-                    if (event.type === "touchstart" && event.touches && event.touches.length < 2) {
-                        return false; 
-                    }
-                    return true;
-                })
                 .on("zoom", (event) => {
                     if (g) g.attr("transform", event.transform);
                 });
             svg.call(zoom);
-
-            container.addEventListener('touchmove', (e) => {
-                if (e.touches.length === 1) {
-                    const warning = document.getElementById("touchWarning");
-                    if (warning) {
-                        warning.classList.remove("opacity-0");
-                        clearTimeout(warningTimeout);
-                        warningTimeout = setTimeout(() => {
-                            warning.classList.add("opacity-0");
-                        }, 1200);
-                    }
-                }
-            }, { passive: true });
 
             g = svg.append("g");
             gLinks = g.append("g").attr("class", "links-layer");
@@ -1308,7 +1247,6 @@
                 document.documentElement.classList.toggle("dark");
             });
 
-            // Modal logic for team members
             const openModalBtn = document.getElementById('openTeamModal');
             const closeModalBtn = document.getElementById('closeTeamModal');
             const teamModal = document.getElementById('teamModal');
