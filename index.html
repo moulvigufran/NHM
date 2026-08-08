@@ -149,7 +149,12 @@
                         <i class="fa-solid fa-network-wired text-emerald-500"></i>
                         Healthcare Network Hierarchy Mapping
                     </h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Explore the referral pathway from village grassroots to tertiary apex care.</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 flex flex-wrap items-center gap-1.5">
+                        Explore the referral pathway from village grassroots to tertiary apex care.
+                        <span class="inline-flex items-center gap-1.5 font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-lg shadow-sm">
+                            <i class="fa-solid fa-hand-pointer animate-pulse text-[10px]"></i> Tap on any center for details
+                        </span>
+                    </p>
                 </div>
                 
                 <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-1.5 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
@@ -162,6 +167,10 @@
                     </button>
                     <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
                     <button id="expandAllBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Expand All</button>
+                    <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
+                    <a href="#nhm-theory" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-brand-700 dark:text-brand-300 bg-brand-100 dark:bg-brand-900/40 hover:bg-brand-200 dark:hover:bg-brand-900/60 transition-colors flex items-center gap-1.5 shadow-sm border border-brand-200 dark:border-brand-800">
+                        <i class="fa-solid fa-arrow-down"></i> Skip Map
+                    </a>
                 </div>
             </div>
 
@@ -193,6 +202,9 @@
                             <p class="text-sm font-medium text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1.5">
                                 <i class="fa-solid fa-location-dot"></i> <span id="inspectAddress">Location</span>
                             </p>
+                            <a href="#nhm-theory" class="inline-flex mt-3 items-center gap-1.5 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-brand-700 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/40 hover:bg-brand-100 dark:hover:bg-brand-900/60 rounded-xl transition-colors border border-brand-200 dark:border-brand-800 shadow-sm">
+                                <i class="fa-solid fa-book-medical"></i> View NHM Guidelines
+                            </a>
                         </div>
                         <div class="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 rounded-2xl border border-slate-100 dark:border-slate-700 max-w-sm">
                             <h4 class="text-xs font-bold text-slate-500 uppercase mb-1">Population & Criteria</h4>
@@ -219,7 +231,7 @@
         </section>
 
         <!-- 2. NHM COMPREHENSIVE THEORY (K. PARK REFERENCE) -->
-        <section class="space-y-6">
+        <section id="nhm-theory" class="space-y-6 scroll-mt-24">
             <div class="text-center max-w-3xl mx-auto mb-10">
                 <span class="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-brand-100 text-brand-700 dark:bg-brand-900/50 dark:text-brand-300 border border-brand-200 dark:border-brand-800">Knowledge Base</span>
                 <h2 class="text-3xl font-extrabold font-display text-slate-900 dark:text-white mt-4">National Health Mission (NHM)</h2>
@@ -300,6 +312,45 @@
                     </div>
                     <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">RMNCH+A Approach</h3>
                     <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Strategic continuum of care addressing Reproductive, Maternal, Newborn, Child, and Adolescent Health. Key drivers include <strong>JSY</strong> (cash transfers) and <strong>JSSK</strong> (free maternity services).</p>
+                </div>
+            </div>
+
+            <!-- National Health Programmes Section -->
+            <div class="pt-8 border-b border-slate-200 dark:border-slate-700 pb-2 mt-6">
+                <h3 class="text-xl font-bold font-display text-slate-900 dark:text-white">National Health Programmes under NHM</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Key communicable and non-communicable disease control programs implemented horizontally via the primary healthcare system.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
+                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lungs-virus text-rose-500"></i> NTEP</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Tuberculosis Elimination</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-300">Provides free diagnosis (CBNAAT/TrueNat) and DOTS treatment to eradicate TB by 2025.</p>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
+                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-mosquito text-emerald-500"></i> NVBDCP</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Vector Borne Disease Control</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-300">Controls Malaria, Dengue, Chikungunya, Kala-azar, and Lymphatic Filariasis through vector management.</p>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
+                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-heart-pulse text-blue-500"></i> NP-NCD</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Programme for NCDs</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-300">Screening and management of Cancer, Diabetes, Cardiovascular Diseases, and Stroke at HWCs.</p>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
+                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-hands-bubbles text-amber-500"></i> NLEP</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Leprosy Eradication</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-300">Early case detection and free Multi-Drug Therapy (MDT) to reduce prevalence below 1/10,000.</p>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
+                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-eye text-cyan-500"></i> NBCP & VI</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Blindness Control</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-300">Free cataract surgeries, school eye screening, and spectacle distribution to reduce blindness.</p>
+                </div>
+                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
+                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-brain text-purple-500"></i> NMHP</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Mental Health Programme</p>
+                    <p class="text-xs text-slate-600 dark:text-slate-300">Integration of mental healthcare with primary care, providing counseling and psychiatric drugs.</p>
                 </div>
             </div>
 
@@ -523,6 +574,33 @@
                 </table>
             </div>
         </section>
+
+        <!-- Project Team Footer -->
+        <footer class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700 pb-4 text-center">
+            <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">Project By</h3>
+            <div class="inline-block text-left relative w-80 mx-auto cursor-pointer group">
+                <details class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm [&_summary::-webkit-details-marker]:hidden relative z-20">
+                    <summary class="flex items-center justify-between px-5 py-3 font-semibold text-slate-700 dark:text-slate-300 text-sm list-none select-none">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-users-rectangle text-brand-500"></i> View Team Members</span>
+                        <i class="fa-solid fa-chevron-down transition-transform group-open:rotate-180 text-slate-400 text-xs"></i>
+                    </summary>
+                    <div class="absolute bottom-full mb-2 left-0 w-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-xl max-h-64 overflow-y-auto">
+                        <ul class="py-2 text-xs font-medium text-slate-600 dark:text-slate-300 text-left">
+                            <li class="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">61. KUPPILI LEENA PATTNAIK</li>
+                            <li class="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">62. LANKADA VARUN KUMAR</li>
+                            <li class="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">63. MADDILA SIVAKRISHNA</li>
+                            <li class="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">64. MADDIMSETTY SUBHASH</li>
+                            <li class="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">65. MADETI GITANJALI</li>
+                            <li class="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">66. MANDALA ROHITH</li>
+                            <li class="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">67. MANTHRI SUKESH KARTHEKEYA</li>
+                            <li class="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">68. MEESALA SHARMILA RANI</li>
+                            <li class="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">69. MOHAMMAD NABEEL KHAN</li>
+                            <li class="px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">70. MOULVI GUFRAN</li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+        </footer>
 
     </main>
 
@@ -1004,6 +1082,14 @@
 
             document.getElementById("inspectorEmptyState").classList.add("hidden");
             document.getElementById("inspectorContent").classList.remove("hidden");
+
+            // Automatically and smoothly scroll the details panel into view when a node is tapped
+            setTimeout(() => {
+                const drawer = document.getElementById("detailDrawer");
+                if (drawer) {
+                    drawer.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }
+            }, 100);
         }
 
         function handleSearch(query) {
