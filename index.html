@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National Health Mission - Vizianagaram District Health Network</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0fdfa', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1', 900: '#0c4a6e' },
+                        emerald: { 500: '#10b981', 600: '#059669', 700: '#047857' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- D3.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f5; /* light slate */
+        }
+        .dark body { background-color: #0f172a; } /* dark slate */
+        .font-display { font-family: 'Outfit', sans-serif; }
+        
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Glassmorphism utilities */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .dark .glass-panel {
+            background: rgba(30, 41, 59, 0.85);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* D3 Tree Styles */
+        .node { cursor: pointer; }
+        .node circle {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            stroke-width: 3px;
+        }
+        .node:hover circle {
+            transform: scale(1.35);
+            filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.6));
+        }
+        .node text.node-title {
+            font-size: 12px;
+            font-weight: 700;
+            fill: #1e293b;
+            stroke: #ffffff;
+            stroke-width: 4px;
+            paint-order: stroke fill;
+            stroke-linejoin: round;
+        }
+        .dark .node text.node-title { fill: #f8fafc; stroke: #0f172a; }
+        .node text.node-sub {
+            font-size: 10px;
+            font-weight: 600;
+            fill: #64748b;
+            stroke: #ffffff;
+            stroke-width: 3px;
+            paint-order: stroke fill;
+        }
+        .dark .node text.node-sub { fill: #94a3b8; stroke: #0f172a; }
+        .link {
+            fill: none;
+            stroke-width: 2.5px;
+            transition: stroke 0.3s ease, stroke-width 0.3s ease;
+            stroke-linecap: round;
+        }
+        
+        /* Background Pattern */
+        .bg-pattern {
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .dark .bg-pattern { background-image: radial-gradient(#334155 1px, transparent 1px); }
+    </style>
+</head>
+<body class="text-slate-800 dark:text-slate-200 transition-colors duration-300 antialiased selection:bg-brand-500 selection:text-white">
+
+    <!-- Sticky Header -->
+    <header class="fixed top-0 w-full z-50 glass-panel shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-br from-emerald-500 to-teal-600 w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
+                    <i class="fa-solid fa-staff-snake text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold font-display tracking-tight bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-400 bg-clip-text text-transparent">
+                        National Health Mission
+                    </h1>
+                    <p class="text-[10px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400 tracking-wide uppercase">Comprehensive District Healthcare Guide</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <!-- Search -->
+                <div class="hidden md:flex relative group">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-emerald-500 transition-colors"></i>
+                    <input type="text" id="searchInput" placeholder="Search facilities, tiers..." 
+                           class="w-64 pl-9 pr-4 py-2 text-sm rounded-full border border-slate-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all backdrop-blur-sm shadow-inner">
+                </div>
+                <!-- Theme Toggle -->
+                <button id="themeToggle" class="w-10 h-10 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-emerald-600 transition-all shadow-sm">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="pt-24 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+
+        <!-- 1. INTERACTIVE TREE SECTION -->
+        <section class="flex flex-col rounded-3xl bg-white dark:bg-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-black/20 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
+            <!-- Tree Header/Controls -->
+            <div class="px-5 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 flex flex-wrap items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-lg font-bold font-display flex items-center gap-2 text-slate-800 dark:text-white">
+                        <i class="fa-solid fa-network-wired text-emerald-500"></i>
+                        Healthcare Network Hierarchy Mapping
+                    </h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Explore the referral pathway from village grassroots to tertiary apex care.</p>
+                </div>
+                
+                <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-1.5 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <button id="layoutToggleBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate"></i> <span id="layoutToggleText">Vertical</span>
+                    </button>
+                    <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
+                    <button id="resetZoomBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 transition-colors flex items-center gap-1.5">
+                        <i class="fa-solid fa-crosshairs"></i> Center
+                    </button>
+                    <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
+                    <button id="expandAllBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">Expand All</button>
+                </div>
+            </div>
+
+            <!-- Tree Viewport -->
+            <div id="treeContainer" class="relative w-full h-[500px] bg-slate-50 dark:bg-slate-900 bg-pattern overflow-hidden cursor-grab active:cursor-grabbing">
+                <!-- Tiers Legend -->
+                <div class="absolute top-4 left-4 z-10 glass-panel px-3 py-2 rounded-xl flex flex-col gap-1.5 text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                    <div class="flex items-center gap-2 text-purple-700 dark:text-purple-400"><div class="w-2.5 h-2.5 rounded-full bg-purple-500"></div> Tier 5 (Apex)</div>
+                    <div class="flex items-center gap-2 text-blue-700 dark:text-blue-400"><div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div> Tier 4 (Secondary)</div>
+                    <div class="flex items-center gap-2 text-emerald-700 dark:text-emerald-400"><div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div> Tier 3 (Primary)</div>
+                    <div class="flex items-center gap-2 text-orange-700 dark:text-orange-400"><div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div> Tier 2 (Sub-Centre)</div>
+                    <div class="flex items-center gap-2 text-pink-700 dark:text-pink-400"><div class="w-2.5 h-2.5 rounded-full bg-pink-500"></div> Tier 1 (Grassroots)</div>
+                </div>
+                <svg id="treeSvg" class="w-full h-full block"></svg>
+            </div>
+
+            <!-- Facility Inspector Panel (Bottom Drawer) -->
+            <div id="detailDrawer" class="bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 p-5 transition-all">
+                <div id="inspectorEmptyState" class="flex flex-col items-center justify-center py-6 text-slate-400 dark:text-slate-500 text-sm">
+                    <i class="fa-solid fa-hand-pointer text-3xl mb-2 text-emerald-500/50 animate-bounce"></i>
+                    <p>Click on any facility node in the flowchart to view detailed infrastructure, staffing, and criteria.</p>
+                </div>
+
+                <div id="inspectorContent" class="hidden animate-fade-in">
+                    <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+                        <div>
+                            <span id="inspectBadge" class="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200">Tier Level</span>
+                            <h3 id="inspectTitle" class="text-2xl font-bold font-display text-slate-900 dark:text-white mt-2">Facility Name</h3>
+                            <p class="text-sm font-medium text-emerald-600 dark:text-emerald-400 mt-1 flex items-center gap-1.5">
+                                <i class="fa-solid fa-location-dot"></i> <span id="inspectAddress">Location</span>
+                            </p>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-900/50 px-4 py-3 rounded-2xl border border-slate-100 dark:border-slate-700 max-w-sm">
+                            <h4 class="text-xs font-bold text-slate-500 uppercase mb-1">Population & Criteria</h4>
+                            <p id="inspectCriteria" class="text-sm text-slate-700 dark:text-slate-300 font-medium"></p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-700">
+                            <h4 class="font-bold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 text-sm">
+                                <i class="fa-solid fa-user-doctor text-blue-500"></i> Health Worker Cadre
+                            </h4>
+                            <ul id="inspectWorkers" class="space-y-1.5 text-sm text-slate-600 dark:text-slate-300"></ul>
+                        </div>
+                        <div class="bg-slate-50 dark:bg-slate-700/30 p-4 rounded-2xl border border-slate-100 dark:border-slate-700">
+                            <h4 class="font-bold text-slate-800 dark:text-slate-200 mb-2 flex items-center gap-2 text-sm">
+                                <i class="fa-solid fa-stethoscope text-emerald-500"></i> Services & Infrastructure
+                            </h4>
+                            <div id="inspectServices" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. NHM COMPREHENSIVE THEORY (K. PARK REFERENCE) -->
+        <section class="space-y-6">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <span class="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-brand-100 text-brand-700 dark:bg-brand-900/50 dark:text-brand-300 border border-brand-200 dark:border-brand-800">Knowledge Base</span>
+                <h2 class="text-3xl font-extrabold font-display text-slate-900 dark:text-white mt-4">National Health Mission (NHM)</h2>
+                <p class="text-slate-600 dark:text-slate-400 mt-3 text-sm">A comprehensive framework compiled from <strong>Park's Textbook of Preventive and Social Medicine</strong>, mapping strategies, criteria, and cadres to actual district implementation.</p>
+            </div>
+
+            <!-- Strategies Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Card 1 -->
+                <div class="glass-panel p-5 rounded-3xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                    <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-users-rays text-lg"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">Communitization</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Empowering communities through <strong>ASHA</strong> volunteers, Village Health Sanitation & Nutrition Committees (VHSNC), and Rogi Kalyan Samitis (RKS) for decentralized health management.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="glass-panel p-5 rounded-3xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                    <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-coins text-lg"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">Flexible Financing</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Provision of <strong>Untied Funds</strong> to Sub-Centres, PHCs, and CHCs, allowing local medical officers and committees to address immediate, localized healthcare infrastructure gaps.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="glass-panel p-5 rounded-3xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                    <div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-network-wired text-lg"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">Program Integration</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Moving from vertical disease control to horizontal integration. Programs like NTEP (TB), NVBDCP (Malaria/Dengue), and NLEP (Leprosy) are delivered comprehensively via primary care.</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="glass-panel p-5 rounded-3xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                    <div class="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3">
+                        <i class="fa-solid fa-person-breastfeeding text-lg"></i>
+                    </div>
+                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">RMNCH+A Approach</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Strategic continuum of care addressing Reproductive, Maternal, Newborn, Child, and Adolescent Health. Key drivers include <strong>JSY</strong> (cash transfers) and <strong>JSSK</strong> (free maternity services).</p>
+                </div>
+            </div>
+
+            <!-- Health Workers Cadre Row -->
+            <h3 class="text-xl font-bold font-display text-slate-900 dark:text-white pt-6 border-b border-slate-200 dark:border-slate-700 pb-2">Health Worker Cadres & Mandates</h3>
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                    <div class="text-emerald-500 font-black text-2xl mb-1">ASHA</div>
+                    <div class="text-xs font-bold text-slate-800 dark:text-slate-200">1 per 1,000 Pop.</div>
+                    <div class="text-[10px] text-slate-500 mt-1">Village-level mobilizer, escorts pregnant women, promotes immunization.</div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                    <div class="text-emerald-500 font-black text-2xl mb-1">AWW</div>
+                    <div class="text-xs font-bold text-slate-800 dark:text-slate-200">1 per 400-800 Pop.</div>
+                    <div class="text-[10px] text-slate-500 mt-1">Anganwadi Worker. Focuses on supplementary nutrition & growth monitoring.</div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                    <div class="text-emerald-500 font-black text-2xl mb-1">ANM</div>
+                    <div class="text-xs font-bold text-slate-800 dark:text-slate-200">1 per 5,000 Pop.</div>
+                    <div class="text-[10px] text-slate-500 mt-1">Auxiliary Nurse Midwife. Manages Sub-Centre, conducts field immunizations.</div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center">
+                    <div class="text-emerald-500 font-black text-2xl mb-1">CHO</div>
+                    <div class="text-xs font-bold text-slate-800 dark:text-slate-200">1 per Sub-Centre</div>
+                    <div class="text-[10px] text-slate-500 mt-1">Community Health Officer. Leads Ayushman Arogya Mandirs (NCDs, Telemed).</div>
+                </div>
+                <div class="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 text-center col-span-2 md:col-span-1">
+                    <div class="text-emerald-500 font-black text-2xl mb-1">MO</div>
+                    <div class="text-xs font-bold text-slate-800 dark:text-slate-200">1 per 30,000 Pop.</div>
+                    <div class="text-[10px] text-slate-500 mt-1">Medical Officer (MBBS). Heads the PHC, manages emergencies & outpatient care.</div>
+                </div>
+            </div>
+
+            <!-- IPHS Full Criteria Table -->
+            <h3 class="text-xl font-bold font-display text-slate-900 dark:text-white pt-6 border-b border-slate-200 dark:border-slate-700 pb-2">IPHS Population Norms vs. District Actuality</h3>
+            <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 font-bold uppercase tracking-wider text-[10px]">
+                        <tr>
+                            <th class="p-4 border-b dark:border-slate-700">Facility Level</th>
+                            <th class="p-4 border-b dark:border-slate-700">Norms (Plain / Tribal)</th>
+                            <th class="p-4 border-b dark:border-slate-700">Bed Mandate</th>
+                            <th class="p-4 border-b dark:border-slate-700">Actual Count (Vizianagaram)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 dark:divide-slate-700/50 text-slate-700 dark:text-slate-300 text-xs">
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors">
+                            <td class="p-4 font-bold text-pink-600 dark:text-pink-400">Anganwadi (AWC)</td>
+                            <td class="p-4">400–800 / 300–800</td>
+                            <td class="p-4 text-slate-400">-</td>
+                            <td class="p-4 font-semibold">~2,000+ Centres</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors">
+                            <td class="p-4 font-bold text-orange-600 dark:text-orange-400">Sub-Centre / AAM</td>
+                            <td class="p-4">5,000 / 3,000</td>
+                            <td class="p-4 text-slate-400">0 - Outpatient Only</td>
+                            <td class="p-4 font-semibold">~430–450 Village Clinics</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors">
+                            <td class="p-4 font-bold text-emerald-600 dark:text-emerald-400">Primary Health Centre (PHC)</td>
+                            <td class="p-4">30,000 / 20,000</td>
+                            <td class="p-4">4 to 6 Beds</td>
+                            <td class="p-4 font-semibold">~60 Rural PHCs, ~12 UPHCs</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors">
+                            <td class="p-4 font-bold text-blue-600 dark:text-blue-400">Community Health Centre (CHC)</td>
+                            <td class="p-4">1,20,000 / 80,000</td>
+                            <td class="p-4">30 Beds</td>
+                            <td class="p-4 font-semibold">11 CHCs</td>
+                        </tr>
+                        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/20 transition-colors">
+                            <td class="p-4 font-bold text-indigo-600 dark:text-indigo-400">Area/District Hospital</td>
+                            <td class="p-4">Sub-division / District level</td>
+                            <td class="p-4">100 to 300 Beds</td>
+                            <td class="p-4 font-semibold">2 Area Hospitals, 1 District Hospital</td>
+                        </tr>
+                        <tr class="bg-purple-50/50 dark:bg-purple-900/10">
+                            <td class="p-4 font-black text-purple-700 dark:text-purple-400">Apex Govt. Medical College (GMC)</td>
+                            <td class="p-4">1 per District mandate</td>
+                            <td class="p-4 font-bold">500+ Beds</td>
+                            <td class="p-4 font-bold text-purple-700 dark:text-purple-400">1 GMC & GGH Vizianagaram</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Script Block for D3 Tree & Logic -->
+    <script>
+        // Massive District-Wide Expansion of Vizianagaram Facilities
+        const RAW_TREE_DATA = {
+            id: "tier5_ggh",
+            name: "GMC & GGH Vizianagaram",
+            tier: "Tier 5: Tertiary Apex Care",
+            tierLevel: 5,
+            badge: "bg-purple-100 text-purple-700 border-purple-200",
+            address: "Ghodeyvari Veedhi, Cantonment Area, Vizianagaram Town",
+            workers: ["Super-specialists", "Professors", "Resident Doctors", "Nursing Officers"],
+            services: ["Level-III Trauma", "ICU/NICU", "CT/MRI Diagnostics", "Complex Surgeries"],
+            criteria: "Mandate: 1 Teaching Hospital per district. Actual: Serves ~2.45 Million population as apex referral center.",
+            children: [
+                {
+                    name: "Maharajah District Hospital",
+                    tierLevel: 4,
+                    children: [
+                        { name: "PHC KL Puram", tierLevel: 3, children: [{name:"SC KL Puram-1", tierLevel:2}, {name:"SC KL Puram-2", tierLevel:2}] },
+                        { name: "PHC Rakodu", tierLevel: 3, children: [{name:"SC Rakodu-1", tierLevel:2}, {name:"SC Rakodu-2", tierLevel:2}] },
+                        { name: "UPHC Jonnaguddi", tierLevel: 3 },
+                        { name: "UPHC Phool Baugh", tierLevel: 3 },
+                        { name: "UPHC Lankapatnam", tierLevel: 3 },
+                        { name: "UPHC VT Agraharam", tierLevel: 3 },
+                        { name: "UPHC Arundathinagar", tierLevel: 3 },
+                        { name: "UPHC Santhapeta", tierLevel: 3 },
+                        { name: "UPHC Rajeev Nagar", tierLevel: 3 },
+                        { name: "UPHC Sainadh Colony", tierLevel: 3 },
+                        { name: "UPHC Vulliveedhi", tierLevel: 3 },
+                        { name: "UPHC Vinayaka Nagar", tierLevel: 3 },
+                        { name: "UPHC Ismail Colony", tierLevel: 3 }
+                    ]
+                },
+                {
+                    name: "CHC Bobbili",
+                    tierLevel: 4,
+                    children: [
+                        { name: "PHC Pakki", tierLevel: 3, children: [{name:"SC Pakki", tierLevel:2}, {name:"SC Alajangi", tierLevel:2}] },
+                        { name: "PHC Piridi", tierLevel: 3, children: [{name:"SC Piridi", tierLevel:2}, {name:"SC Khasapeta", tierLevel:2}] },
+                        { name: "PHC Vadada (Badangi)", tierLevel: 3, children: [{name:"SC Vadada", tierLevel:2}, {name:"SC Badangi", tierLevel:2}] },
+                        { name: "PHC Therlam", tierLevel: 3, children: [{name:"SC Therlam", tierLevel:2}, {name:"SC Rajeru", tierLevel:2}] },
+                        { name: "PHC Perumali", tierLevel: 3, children: [{name:"SC Perumali", tierLevel:2}] },
+                        { name: "UPHC Gollapalli", tierLevel: 3 },
+                        { name: "UPHC Sangaveedhi", tierLevel: 3 },
+                        { name: "UPHC Sainagar", tierLevel: 3 }
+                    ]
+                },
+                {
+                    name: "CHC Srungavarapukota (S.Kota)",
+                    tierLevel: 4,
+                    children: [
+                        { name: "PHC Kottam", tierLevel: 3, children: [{name:"SC Kottam", tierLevel:2}, {name:"SC Dharmawaram", tierLevel:2}] },
+                        { name: "PHC Vepada", tierLevel: 3, children: [{name:"SC Vepada", tierLevel:2}, {name:"SC Vallampudi", tierLevel:2}] },
+                        { name: "PHC Boddam", tierLevel: 3, children: [{name:"SC Boddam", tierLevel:2}] },
+                        { name: "PHC L.Kota", tierLevel: 3, children: [{name:"SC L.Kota", tierLevel:2}, {name:"SC Chanduluru", tierLevel:2}] },
+                        { name: "PHC Kallepalli", tierLevel: 3, children: [{name:"SC Kallepalli", tierLevel:2}] },
+                        { name: "PHC Jami", tierLevel: 3, children: [{name:"SC Jami", tierLevel:2}, {name:"SC Kumili", tierLevel:2}] },
+                        { name: "PHC Alamanda", tierLevel: 3, children: [{name:"SC Alamanda", tierLevel:2}] },
+                        { name: "PHC Kothavalasa", tierLevel: 3, children: [{name:"SC Kothavalasa", tierLevel:2}, {name:"SC Mangalapalem", tierLevel:2}] },
+                        { name: "PHC Viyyampeta", tierLevel: 3, children: [{name:"SC Viyyampeta", tierLevel:2}] }
+                    ]
+                },
+                {
+                    name: "CHC Cheepurupalli",
+                    tierLevel: 4,
+                    children: [
+                        { name: "PHC Karlam", tierLevel: 3, children: [{name:"SC Karlam", tierLevel:2}, {name:"SC G.Agraharam", tierLevel:2}] },
+                        { name: "PHC Garividi", tierLevel: 3, children: [{name:"SC Garividi", tierLevel:2}, {name:"SC Sriramnagar", tierLevel:2}] },
+                        { name: "PHC Konuru", tierLevel: 3, children: [{name:"SC Konuru", tierLevel:2}] },
+                        { name: "PHC Merakamudidam", tierLevel: 3, children: [{name:"SC Merakamudidam", tierLevel:2}, {name:"SC Bheemavaram", tierLevel:2}] },
+                        { name: "PHC Garbham", tierLevel: 3, children: [{name:"SC Garbham", tierLevel:2}] },
+                        { name: "PHC Gurla", tierLevel: 3, children: [{name:"SC Gurla", tierLevel:2}, {name:"SC T.N.Puram", tierLevel:2}] },
+                        { name: "PHC Thettangi", tierLevel: 3, children: [{name:"SC Thettangi", tierLevel:2}] }
+                    ]
+                },
+                {
+                    name: "CHC Bhogapuram",
+                    tierLevel: 4,
+                    children: [
+                        { name: "PHC Polipalli", tierLevel: 3, children: [{name:"SC Polipalli", tierLevel:2}, {name:"SC Gudivada", tierLevel:2}] },
+                        { name: "PHC Pusapatirega", tierLevel: 3, children: [{name:"SC Pusapatirega", tierLevel:2}, {name:"SC Chodavaram", tierLevel:2}] },
+                        { name: "PHC Govindapuram", tierLevel: 3, children: [{name:"SC Govindapuram", tierLevel:2}] },
+                        { name: "PHC Rellivalasa", tierLevel: 3, children: [{name:"SC Rellivalasa", tierLevel:2}] },
+                        { name: "PHC Denkada", tierLevel: 3, children: [{name:"SC Denkada", tierLevel:2}, {name:"SC Natavalasa", tierLevel:2}] },
+                        { name: "PHC Mopada", tierLevel: 3, children: [{name:"SC Mopada", tierLevel:2}] }
+                    ]
+                },
+                {
+                    name: "Area Hospital Gajapathinagaram",
+                    tierLevel: 4,
+                    children: [
+                        { name: "PHC Marupalli", tierLevel: 3, children: [{name:"SC Marupalli", tierLevel:2}] },
+                        { name: "PHC Mentada", tierLevel: 3, children: [{name:"SC Mentada", tierLevel:2}, {name:"SC Andra", tierLevel:2}] },
+                        { name: "PHC Challapeta", tierLevel: 3, children: [{name:"SC Challapeta", tierLevel:2}] },
+                        { name: "PHC Dattirajeru", tierLevel: 3, children: [{name:"SC Dattirajeru", tierLevel:2}, {name:"SC Pedakada", tierLevel:2}] },
+                        { name: "PHC K.Kothavalasa", tierLevel: 3, children: [{name:"SC K.Kothavalasa", tierLevel:2}] },
+                        { name: "PHC Bondapalli", tierLevel: 3, children: [{name:"SC Bondapalli", tierLevel:2}, {name:"SC Gajapathinagaram Rural", tierLevel:2}] },
+                        { name: "PHC Devupalli", tierLevel: 3, children: [{name:"SC Devupalli", tierLevel:2}] },
+                        { name: "PHC Gantyada", tierLevel: 3, children: [{name:"SC Gantyada", tierLevel:2}, {name:"SC Korlam", tierLevel:2}] },
+                        { name: "PHC Pedamajjipalem", tierLevel: 3, children: [{name:"SC Pedamajjipalem", tierLevel:2}] }
+                    ]
+                },
+                {
+                    name: "CHC Nellimarla",
+                    tierLevel: 4,
+                    children: [
+                        { name: "PHC Kondavelagada", tierLevel: 3, children: [{name:"SC Kondavelagada", tierLevel:2}, {name:"SC S.S.Peta", tierLevel:2}] },
+                        { name: "PHC Sathivada", tierLevel: 3, children: [{name:"SC Sathivada", tierLevel:2}] },
+                        { name: "PHC Moida Junction", tierLevel: 3, children: [{name:"SC Moida", tierLevel:2}] }
+                    ]
+                },
+                {
+                    name: "CHC Ramabhadrapuram",
+                    tierLevel: 4,
+                    children: [
+                        { name: "PHC Ramabhadrapuram", tierLevel: 3, children: [{name:"SC Ramabhadrapuram", tierLevel:2}, {name:"SC Naiduvalasa", tierLevel:2}] },
+                        { name: "PHC Arikathota", tierLevel: 3, children: [{name:"SC Arikathota", tierLevel:2}] }
+                    ]
+                },
+                {
+                    name: "Area Hospital Saluru",
+                    tierLevel: 4,
+                    children: [
+                        { name: "PHC Salur Rural", tierLevel: 3, children: [{name:"SC Mamidipalli", tierLevel:2}, {name:"SC Tonam", tierLevel:2}] },
+                        { name: "PHC Makkuva", tierLevel: 3, children: [{name:"SC Makkuva", tierLevel:2}] }
+                    ]
+                }
+            ]
+        };
+
+        // Helper function to auto-populate workers, services, addresses, and criteria for hundreds of nodes
+        function populateTreeData(node) {
+            if (!node.id) node.id = node.name.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() + '_' + Math.random().toString(36).substr(2, 5);
+            
+            if (node.tierLevel === 4) {
+                node.badge = "bg-blue-100 text-blue-700 border-blue-200";
+                if(!node.workers) node.workers = ["Specialists", "CAS Medical Officers", "Staff Nurses"];
+                if(!node.services) node.services = ["30-100 Beds", "Secondary Wards", "Ultrasound", "Emergency Operations", "Blood Storage"];
+                if(!node.tier) node.tier = node.name.includes("District") ? "Tier 4: District Hospital" : (node.name.includes("Area") ? "Tier 4: Area Hospital" : "Tier 4: Community Health Centre");
+                if(!node.criteria) node.criteria = "Mandate: 1 CHC per 1,20,000 population.";
+                if(!node.address) node.address = node.name.replace("CHC ", "").replace("Area Hospital ", "") + " Mandal HQ";
+            } else if (node.tierLevel === 3) {
+                node.badge = "bg-emerald-100 text-emerald-700 border-emerald-200";
+                if(!node.workers) node.workers = ["Medical Officer (MO)", "Staff Nurses", "Lab Technician", "Pharmacist"];
+                if(!node.services) node.services = ["24/7 Delivery", "OPD", "63 Free Lab Tests", "Immunization"];
+                if(!node.tier) node.tier = node.name.includes("UPHC") ? "Tier 3: Urban PHC" : "Tier 3: Primary Health Centre";
+                if(!node.criteria) node.criteria = "Mandate: 1 PHC per 30,000 population.";
+                if(!node.address) node.address = node.name.replace("PHC ", "").replace("UPHC ", "") + " Village/Ward";
+                
+                // For Urban PHCs that don't have sub-centers manually listed, add generic UPHC wards
+                if(!node.children && node.name.includes("UPHC")) {
+                    node.children = [{
+                        name: "Ward " + node.name.replace("UPHC ", ""),
+                        tierLevel: 2,
+                        tier: "Tier 2: Urban Health Clinic",
+                        badge: "bg-orange-100 text-orange-700 border-orange-200",
+                        address: node.name.replace("UPHC ", "") + " Ward Secretariats",
+                        workers: ["ANM", "MPHW", "ASHA Worker"],
+                        services: ["Urban Immunization", "NCD Screening", "Sanitation"],
+                        criteria: "Mandate: 1 per Urban Slum/Ward."
+                    }];
+                }
+
+            } else if (node.tierLevel === 2) {
+                node.badge = "bg-orange-100 text-orange-700 border-orange-200";
+                if(!node.workers) node.workers = ["CHO / MLHP", "ANM", "MPHW (Male)"];
+                if(!node.services) node.services = ["14 Rapid Tests", "e-Sanjeevani Telemed", "NCD Screening", "ANC Tagging"];
+                if(!node.tier) node.tier = "Tier 2: Ayushman Arogya Mandir";
+                if(!node.criteria) node.criteria = "Mandate: 1 SC per 5,000 population.";
+                if(!node.address) node.address = node.name.replace("SC ", "") + " Village Secretariat";
+                
+                // Add a default Level 1 Anganwadi child to every Level 2 node to make the tree perfectly complete
+                if(!node.children) {
+                    node.children = [{
+                        name: "AWC " + node.name.replace("SC ", "").replace("Ward ", ""),
+                        tierLevel: 1,
+                        tier: "Tier 1: Grassroots AWC",
+                        badge: "bg-pink-100 text-pink-700 border-pink-200",
+                        address: node.name.replace("SC ", "").replace("Ward ", "") + " Habitation",
+                        workers: ["Anganwadi Worker (AWW)", "ASHA Worker", "Anganwadi Helper"],
+                        services: ["Supplementary Nutrition", "Growth Monitoring", "IFA Tablets", "UIP Mobilization"],
+                        criteria: "Mandate: 1 AWC per 300-800 pop. 1 ASHA per 1,000 pop."
+                    }];
+                }
+            } else if (node.tierLevel === 1) {
+                node.badge = "bg-pink-100 text-pink-700 border-pink-200";
+                if(!node.workers) node.workers = ["Anganwadi Worker (AWW)", "ASHA Worker", "Anganwadi Helper"];
+                if(!node.services) node.services = ["Supplementary Nutrition", "Growth Monitoring", "IFA Tablets", "UIP Mobilization"];
+                if(!node.tier) node.tier = "Tier 1: Grassroots AWC";
+                if(!node.criteria) node.criteria = "Mandate: 1 AWC per 300-800 pop. 1 ASHA per 1,000 pop.";
+            }
+
+            if (node.children) {
+                node.children.forEach(populateTreeData);
+            }
+        }
+
+        populateTreeData(RAW_TREE_DATA);
+        const HEALTH_TREE_DATA = RAW_TREE_DATA;
+
+        let currentLayout = "horizontal";
+        let svg, g, gLinks, gNodes, zoom, root;
+        let selectedNode = null;
+
+        // Colors mapping by tier level
+        const tierColors = {
+            5: { stroke: "#8b5cf6", fill: "#f3e8ff" }, // Purple
+            4: { stroke: "#3b82f6", fill: "#dbeafe" }, // Blue
+            3: { stroke: "#10b981", fill: "#d1fae5" }, // Emerald
+            2: { stroke: "#f97316", fill: "#ffedd5" }, // Orange
+            1: { stroke: "#ec4899", fill: "#fce7f3" }  // Pink
+        };
+
+        function initD3Tree() {
+            const container = document.getElementById("treeContainer");
+            if (!container) return;
+            
+            svg = d3.select("#treeSvg");
+            svg.selectAll("*").remove();
+
+            zoom = d3.zoom()
+                .scaleExtent([0.2, 3])
+                .on("zoom", (event) => {
+                    if (g) g.attr("transform", event.transform);
+                });
+            svg.call(zoom);
+
+            g = svg.append("g");
+            gLinks = g.append("g").attr("class", "links-layer");
+            gNodes = g.append("g").attr("class", "nodes-layer");
+
+            root = d3.hierarchy(HEALTH_TREE_DATA);
+            root.x0 = 0;
+            root.y0 = 0;
+
+            // Start with nodes collapsed beyond level 2 for cleanliness
+            root.descendants().forEach(d => {
+                if (d.depth > 1 && d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                }
+            });
+
+            updateTree(root);
+            
+            // Allow SVG to calculate dimensions then reset view
+            setTimeout(resetView, 100);
+        }
+
+        function updateTree(source) {
+            if (!g || !root) return;
+
+            // Dimensions for node spacing
+            const nodeWidth = currentLayout === "horizontal" ? 240 : 140;
+            const nodeHeight = currentLayout === "horizontal" ? 60 : 180;
+
+            const treeLayout = d3.tree().nodeSize([nodeHeight, nodeWidth]);
+            const treeData = treeLayout(root);
+
+            const nodes = treeData.descendants();
+            const links = treeData.links();
+
+            // Depth scaling
+            nodes.forEach(d => {
+                d.y = d.depth * (currentLayout === "horizontal" ? 260 : 160);
+            });
+
+            // -- LINKS --
+            const link = gLinks.selectAll("path.link")
+                .data(links, d => d.target.data.id);
+
+            const linkEnter = link.enter().append("path")
+                .attr("class", "link")
+                .attr("stroke", d => tierColors[d.target.data.tierLevel]?.stroke || "#94a3b8")
+                .attr("stroke-opacity", 0.5)
+                .attr("d", d => {
+                    const o = { x: source.x0 || 0, y: source.y0 || 0 };
+                    return calculateDiagonal({ source: o, target: o });
+                });
+
+            const linkUpdate = linkEnter.merge(link);
+            linkUpdate.transition().duration(400)
+                .attr("stroke", d => tierColors[d.target.data.tierLevel]?.stroke || "#94a3b8")
+                .attr("d", d => calculateDiagonal(d));
+
+            link.exit().transition().duration(400)
+                .attr("d", d => {
+                    const o = { x: source.x || 0, y: source.y || 0 };
+                    return calculateDiagonal({ source: o, target: o });
+                })
+                .remove();
+
+            // -- NODES --
+            const node = gNodes.selectAll("g.node")
+                .data(nodes, d => d.data.id);
+
+            const nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", d => {
+                    return currentLayout === "horizontal" 
+                        ? `translate(${source.y0 || 0},${source.x0 || 0})`
+                        : `translate(${source.x0 || 0},${source.y0 || 0})`;
+                })
+                .on("click", (event, d) => {
+                    event.stopPropagation();
+                    if (d.children) {
+                        d._children = d.children;
+                        d.children = null;
+                    } else if (d._children) {
+                        d.children = d._children;
+                        d._children = null;
+                    }
+                    updateTree(d);
+                    selectAndInspectNode(d);
+                });
+
+            nodeEnter.append("circle")
+                .attr("r", 1e-6)
+                .attr("fill", d => d._children ? tierColors[d.data.tierLevel]?.stroke : "#ffffff")
+                .attr("stroke", d => tierColors[d.data.tierLevel]?.stroke || "#cbd5e1");
+
+            nodeEnter.append("text")
+                .attr("class", "node-title")
+                .attr("dy", ".35em")
+                .attr("x", d => currentLayout === "horizontal" ? (d.children || d._children ? -16 : 16) : 0)
+                .attr("y", d => currentLayout === "vertical" ? 22 : 0)
+                .attr("text-anchor", d => currentLayout === "horizontal" ? (d.children || d._children ? "end" : "start") : "middle")
+                .text(d => d.data.name);
+
+            nodeEnter.append("text")
+                .attr("class", "node-sub")
+                .attr("dy", "1.7em")
+                .attr("x", d => currentLayout === "horizontal" ? (d.children || d._children ? -16 : 16) : 0)
+                .attr("y", d => currentLayout === "vertical" ? 22 : 0)
+                .attr("text-anchor", d => currentLayout === "horizontal" ? (d.children || d._children ? "end" : "start") : "middle")
+                .text(d => d.data.tier.split(':')[0]); // Shorten tier text
+
+            const nodeUpdate = nodeEnter.merge(node);
+            nodeUpdate.transition().duration(400)
+                .attr("transform", d => currentLayout === "horizontal" ? `translate(${d.y},${d.x})` : `translate(${d.x},${d.y})`);
+
+            nodeUpdate.select("circle")
+                .attr("r", 8)
+                .attr("fill", d => d._children ? tierColors[d.data.tierLevel]?.stroke : (selectedNode?.data.id === d.data.id ? tierColors[d.data.tierLevel]?.stroke : "#ffffff"))
+                .attr("stroke", d => tierColors[d.data.tierLevel]?.stroke || "#cbd5e1")
+                .attr("stroke-width", d => selectedNode?.data.id === d.data.id ? 4 : 2.5);
+
+            node.exit().transition().duration(400)
+                .attr("transform", d => currentLayout === "horizontal" ? `translate(${source.y || 0},${source.x || 0})` : `translate(${source.x || 0},${source.y || 0})`)
+                .remove();
+
+            nodes.forEach(d => { d.x0 = d.x; d.y0 = d.y; });
+        }
+
+        function calculateDiagonal(d) {
+            if (currentLayout === "horizontal") {
+                return `M ${d.source.y} ${d.source.x}
+                        C ${(d.source.y + d.target.y) / 2} ${d.source.x},
+                          ${(d.source.y + d.target.y) / 2} ${d.target.x},
+                          ${d.target.y} ${d.target.x}`;
+            } else {
+                return `M ${d.source.x} ${d.source.y}
+                        C ${d.source.x} ${(d.source.y + d.target.y) / 2},
+                          ${d.target.x} ${(d.source.y + d.target.y) / 2},
+                          ${d.target.x} ${d.target.y}`;
+            }
+        }
+
+        function resetView() {
+            const container = document.getElementById("treeContainer");
+            if (!container || !svg || !zoom || !root) return;
+
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+            if (width <= 0 || height <= 0) return;
+
+            const nodes = root.descendants();
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+
+            nodes.forEach(d => {
+                if (d.x < minX) minX = d.x;
+                if (d.x > maxX) maxX = d.x;
+                if (d.y < minY) minY = d.y;
+                if (d.y > maxY) maxY = d.y;
+            });
+
+            const treeWidth = maxY - minY;   
+            const treeHeight = maxX - minX;  
+
+            const padX = 100, padY = 80;
+            const scaleX = (width - padX * 2) / (treeWidth || 1);
+            const scaleY = (height - padY * 2) / (treeHeight || 1);
+
+            let scale = Math.min(scaleX, scaleY);
+            scale = Math.max(0.4, Math.min(1, scale));
+
+            const initialX = currentLayout === "horizontal" ? 80 : (width/2) - (minY * scale);
+            const initialY = currentLayout === "horizontal" ? (height / 2) - (((minX + maxX) / 2) * scale) : 60;
+
+            svg.transition().duration(500).call(
+                zoom.transform,
+                d3.zoomIdentity.translate(initialX, initialY).scale(scale)
+            );
+        }
+
+        function expandAll() {
+            function expand(d) {
+                if (d._children) { d.children = d._children; d._children = null; }
+                if (d.children) d.children.forEach(expand);
+            }
+            expand(root);
+            updateTree(root);
+            setTimeout(resetView, 450);
+        }
+
+        function selectAndInspectNode(d) {
+            if (!d || !d.data) return;
+            selectedNode = d;
+
+            // Highlight node
+            if (gNodes) {
+                gNodes.selectAll("g.node circle")
+                    .attr("stroke-width", node => selectedNode.data.id === node.data.id ? 4 : 2.5)
+                    .attr("fill", node => node._children ? tierColors[node.data.tierLevel]?.stroke : (selectedNode.data.id === node.data.id ? tierColors[node.data.tierLevel]?.stroke : "#ffffff"));
+            }
+
+            const data = d.data;
+
+            // Update DOM Elements
+            const badgeEl = document.getElementById("inspectBadge");
+            if (badgeEl) {
+                badgeEl.textContent = data.tier || "Facility Level";
+                badgeEl.className = `px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full ${data.badge || 'bg-slate-100 text-slate-700 border-slate-200'} border`;
+            }
+
+            document.getElementById("inspectTitle").textContent = data.name || "Unknown Facility";
+            document.getElementById("inspectAddress").textContent = data.address || "Address not specified";
+            document.getElementById("inspectCriteria").textContent = data.criteria || "Standard NHM/IPHS norms apply.";
+
+            const workersList = document.getElementById("inspectWorkers");
+            if (workersList) {
+                workersList.innerHTML = "";
+                if (data.workers && data.workers.length) {
+                    data.workers.forEach(w => {
+                        const li = document.createElement("li");
+                        li.className = "flex items-start gap-2";
+                        li.innerHTML = `<i class="fa-solid fa-check text-emerald-500 mt-1 text-[10px]"></i><span>${w}</span>`;
+                        workersList.appendChild(li);
+                    });
+                } else {
+                    workersList.innerHTML = `<li class="text-slate-400 italic text-xs">Standard staff cadre on record.</li>`;
+                }
+            }
+
+            const servicesContainer = document.getElementById("inspectServices");
+            if (servicesContainer) {
+                servicesContainer.innerHTML = "";
+                if (data.services && data.services.length) {
+                    data.services.forEach(s => {
+                        const span = document.createElement("span");
+                        span.className = "px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-[10px] font-semibold shadow-sm";
+                        span.textContent = s;
+                        servicesContainer.appendChild(span);
+                    });
+                } else {
+                    servicesContainer.innerHTML = `<span class="text-slate-400 italic text-xs">Essential outpatient and primary care services.</span>`;
+                }
+            }
+
+            document.getElementById("inspectorEmptyState").classList.add("hidden");
+            document.getElementById("inspectorContent").classList.remove("hidden");
+        }
+
+        function handleSearch(query) {
+            if (!query || !query.trim()) {
+                if (gNodes) {
+                    gNodes.selectAll("g.node circle")
+                        .attr("stroke-width", d => selectedNode?.data.id === d.data.id ? 4 : 2.5)
+                        .attr("stroke", d => tierColors[d.data.tierLevel]?.stroke || "#cbd5e1");
+                }
+                return;
+            }
+
+            const term = query.toLowerCase().trim();
+            expandAll();
+
+            if (gNodes) {
+                gNodes.selectAll("g.node").each(function(d) {
+                    const matchName = d.data.name?.toLowerCase().includes(term);
+                    const matchTier = d.data.tier?.toLowerCase().includes(term);
+
+                    if (matchName || matchTier) {
+                        d3.select(this).select("circle")
+                            .attr("stroke-width", 5)
+                            .attr("stroke", "#f59e0b"); // Highlight amber
+                    } else {
+                        d3.select(this).select("circle")
+                            .attr("stroke-width", d => selectedNode?.data.id === d.data.id ? 4 : 2.5)
+                            .attr("stroke", tierColors[d.data.tierLevel]?.stroke || "#cbd5e1");
+                    }
+                });
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            initD3Tree();
+
+            // Button Listeners
+            document.getElementById("resetZoomBtn")?.addEventListener("click", resetView);
+            document.getElementById("expandAllBtn")?.addEventListener("click", expandAll);
+
+            document.getElementById("layoutToggleBtn")?.addEventListener("click", () => {
+                currentLayout = currentLayout === "horizontal" ? "vertical" : "horizontal";
+                document.getElementById("layoutToggleText").textContent = currentLayout === "horizontal" ? "Vertical" : "Horizontal";
+                if (root) updateTree(root);
+                setTimeout(resetView, 100);
+            });
+
+            // Search
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+                searchInput.addEventListener("input", (e) => handleSearch(e.target.value));
+            }
+
+            // Dark Mode
+            document.getElementById("themeToggle")?.addEventListener("click", () => {
+                document.documentElement.classList.toggle("dark");
+            });
+
+            // Responsive resizing
+            let resizeTimer;
+            window.addEventListener("resize", () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(resetView, 200);
+            });
+        });
+    </script>
+</body>
+</html>
