@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>National Health Mission - COMMUNITE MEDICINE PROJECT GMCVZM</title>
+    <title>National Health Mission - COMMUNITY MEDICINE PROJECT GMCVZM</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -37,17 +37,19 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f4f4f5;
+            background-color: #f4f4f5; /* light slate */
         }
-        .dark body { background-color: #0f172a; }
+        .dark body { background-color: #0f172a; } /* dark slate */
         .font-display { font-family: 'Outfit', sans-serif; }
         
+        /* Modern Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .dark ::-webkit-scrollbar-thumb { background: #475569; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+        /* Glassmorphism utilities */
         .glass-panel {
             background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(16px);
@@ -59,6 +61,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* D3 Tree Styles */
         .node { cursor: pointer; }
         .node circle {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -94,17 +97,28 @@
             stroke-linecap: round;
         }
         
+        /* Background Pattern */
         .bg-pattern {
             background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
             background-size: 20px 20px;
         }
         .dark .bg-pattern { background-image: radial-gradient(#334155 1px, transparent 1px); }
+
+        /* 3D Button Effect */
+        .btn-3d {
+            transition: all 0.15s ease;
+            border-bottom-width: 6px;
+        }
+        .btn-3d:active {
+            border-bottom-width: 0px;
+            transform: translateY(6px);
+        }
     </style>
 </head>
 <body class="text-slate-800 dark:text-slate-200 transition-colors duration-300 antialiased selection:bg-brand-500 selection:text-white">
 
-    <!-- Sticky Header -->
-    <header class="fixed top-0 w-full z-50 glass-panel shadow-sm">
+    <!-- Header -->
+    <header class="w-full z-50 glass-panel shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="bg-gradient-to-br from-emerald-500 to-teal-600 w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/30">
@@ -133,12 +147,14 @@
         </div>
     </header>
 
-    <main class="pt-24 pb-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10 py-8">
 
-        <!-- 1. INTERACTIVE TREE SECTION -->
+        <!-- 1. INTERACTIVE TREE SECTION (MAP ON TOP) -->
         <section class="flex flex-col rounded-3xl bg-white dark:bg-slate-800 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-black/20 border border-slate-100 dark:border-slate-700/50 overflow-hidden">
-            <!-- Tree Viewport Placed First -->
-            <div id="treeContainer" class="relative w-full h-[500px] bg-slate-50 dark:bg-slate-900 bg-pattern overflow-hidden cursor-grab active:cursor-grabbing">
+            
+            <!-- Tree Viewport (Moved to Top) -->
+            <div id="treeContainer" class="relative w-full h-[600px] bg-slate-50 dark:bg-slate-900 bg-pattern overflow-hidden cursor-grab active:cursor-grabbing border-b border-slate-200 dark:border-slate-700">
+                
                 <!-- Tiers Legend -->
                 <div class="absolute top-4 left-4 z-10 glass-panel px-3 py-2 rounded-xl flex flex-col gap-1.5 text-[10px] font-bold uppercase tracking-wider shadow-sm pointer-events-none">
                     <div class="flex items-center gap-2 text-purple-700 dark:text-purple-400"><div class="w-2.5 h-2.5 rounded-full bg-purple-500"></div> Tier 5 (Apex)</div>
@@ -147,17 +163,18 @@
                     <div class="flex items-center gap-2 text-orange-700 dark:text-orange-400"><div class="w-2.5 h-2.5 rounded-full bg-orange-500"></div> Tier 2 (Sub-Centre)</div>
                     <div class="flex items-center gap-2 text-pink-700 dark:text-pink-400"><div class="w-2.5 h-2.5 rounded-full bg-pink-500"></div> Tier 1 (Grassroots)</div>
                 </div>
+                
                 <svg id="treeSvg" class="w-full h-full block"></svg>
             </div>
 
-            <!-- Tree Header & Controls Placed Below the Map -->
-            <div class="px-5 py-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50 flex flex-wrap items-center justify-between gap-4">
+            <!-- Tree Header/Controls (Moved Below Map) -->
+            <div class="px-5 py-4 bg-slate-50/50 dark:bg-slate-800/50 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-lg font-bold font-display flex items-center gap-2 text-slate-800 dark:text-white">
+                    <h2 class="text-xl font-bold font-display flex items-center gap-2 text-slate-800 dark:text-white">
                         <i class="fa-solid fa-network-wired text-emerald-500"></i>
                         Healthcare Network Hierarchy Mapping of Vizianagaram District
                     </h2>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 flex flex-wrap items-center gap-1.5">
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 flex flex-wrap items-center gap-1.5">
                         Explore the referral pathway from village grassroots to tertiary apex care.
                         <span class="inline-flex items-center gap-1.5 font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-lg shadow-sm">
                             <i class="fa-solid fa-hand-pointer animate-pulse text-[10px]"></i> Tap on any center for details
@@ -165,7 +182,7 @@
                     </p>
                 </div>
                 
-                <div class="flex items-center gap-2 bg-white dark:bg-slate-900 p-1.5 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
+                <div class="flex flex-wrap items-center gap-2 bg-white dark:bg-slate-900 p-1.5 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
                     <button id="layoutToggleBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5">
                         <i class="fa-solid fa-rotate"></i> <span id="layoutToggleText">Vertical</span>
                     </button>
@@ -174,14 +191,14 @@
                         <i class="fa-solid fa-crosshairs"></i> Center
                     </button>
                     <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                    <button id="expandAllBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5">
-                        <i class="fa-solid fa-expand" id="expandIcon"></i> <span id="expandBtnText">Expand All</span>
+                    <button id="expandToggleBtn" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5 w-[110px] justify-center">
+                        <i class="fa-solid fa-expand" id="expandIcon"></i> <span id="expandToggleText">Expand All</span>
                     </button>
                 </div>
             </div>
 
             <!-- Facility Inspector Panel (Bottom Drawer) -->
-            <div id="detailDrawer" class="bg-white dark:bg-slate-800 border-t border-slate-100 dark:border-slate-700 p-5 transition-all">
+            <div id="detailDrawer" class="bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-5 transition-all">
                 <div id="inspectorEmptyState" class="flex flex-col items-center justify-center py-6 text-slate-400 dark:text-slate-500 text-sm">
                     <i class="fa-solid fa-hand-pointer text-3xl mb-2 text-emerald-500/50 animate-bounce"></i>
                     <p>Click on any facility node in the flowchart to view detailed infrastructure, staffing, and criteria.</p>
@@ -229,290 +246,143 @@
         </section>
 
         <!-- 2. NHM COMPREHENSIVE THEORY (K. PARK REFERENCE) -->
-        <section id="nhm-theory" class="space-y-6 scroll-mt-24">
+        <section id="nhm-theory" class="space-y-6 scroll-mt-8 pt-8">
             <div class="text-center max-w-3xl mx-auto mb-10">
                 <span class="px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full bg-brand-100 text-brand-700 dark:bg-brand-900/50 dark:text-brand-300 border border-brand-200 dark:border-brand-800">Knowledge Base</span>
                 <h2 class="text-3xl font-extrabold font-display text-slate-900 dark:text-white mt-4">National Health Mission (NHM)</h2>
             </div>
 
-            <!-- NHM Core Vision & Goals -->
-            <div class="bg-gradient-to-br from-emerald-900 to-teal-900 rounded-3xl p-6 md:p-8 text-white shadow-xl mb-10 relative overflow-hidden">
-                <div class="absolute top-0 right-0 -mr-16 -mt-16 text-emerald-500/20">
-                    <i class="fa-solid fa-staff-snake text-9xl"></i>
-                </div>
-                <div class="relative z-10">
-                    <h3 class="text-2xl font-bold font-display mb-4">Core Vision & Architecture of NHM</h3>
-                    <p class="text-emerald-50 mb-6 text-sm md:text-base leading-relaxed max-w-4xl">
-                        Launched initially as the National Rural Health Mission (NRHM) in 2005 and later expanded to NHM in 2013 (combining NRHM and NUHM), the mission aims to provide accessible, affordable, and quality healthcare to rural and urban vulnerable populations. It marks an architectural correction in the health system by promoting decentralized planning, communitization, and flexible financing.
-                    </p>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">
-                            <h4 class="font-bold text-emerald-300 mb-2 flex items-center gap-2"><i class="fa-solid fa-bullseye"></i> Epidemiological Targets</h4>
-                            <ul class="text-xs space-y-1.5 text-emerald-100">
-                                <li>• Reduce Infant Mortality Rate (IMR) to < 25/1000 live births</li>
-                                <li>• Reduce Maternal Mortality Ratio (MMR) to < 70/100,000</li>
-                                <li>• Reduce Total Fertility Rate (TFR) to 2.1</li>
-                                <li>• Eradicate Leprosy, Kala-Azar & Lymphatic Filariasis</li>
-                            </ul>
-                        </div>
-                        <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">
-                            <h4 class="font-bold text-emerald-300 mb-2 flex items-center gap-2"><i class="fa-solid fa-shield-virus"></i> Major Sub-Missions</h4>
-                            <ul class="text-xs space-y-1.5 text-emerald-100">
-                                <li>• <strong>RMNCH+A:</strong> Reproductive, Maternal, Newborn, Child, & Adolescent Health</li>
-                                <li>• Health Systems Strengthening (Infrastructure & HR)</li>
-                                <li>• National Disease Control Programmes (NDCPs)</li>
-                                <li>• Non-Communicable Disease (NCD) Management</li>
-                            </ul>
-                        </div>
-                        <div class="bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/20">
-                            <h4 class="font-bold text-emerald-300 mb-2 flex items-center gap-2"><i class="fa-solid fa-hand-holding-heart"></i> Core Initiatives</h4>
-                            <ul class="text-xs space-y-1.5 text-emerald-100">
-                                <li>• <strong>JSY & JSSK:</strong> Free maternal/infant transport and care</li>
-                                <li>• <strong>RBSK:</strong> Universal child screening for 4Ds (Defects, Diseases, Deficiencies, Delays)</li>
-                                <li>• Free Drugs & Diagnostics Service Initiatives</li>
-                                <li>• Ayushman Arogya Mandirs (Health & Wellness Centres)</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Strategies Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="glass-panel p-5 rounded-3xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                    <div class="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center mb-3">
-                        <i class="fa-solid fa-users-rays text-lg"></i>
-                    </div>
-                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">Communitization</h3>
-                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Empowering communities through <strong>ASHA</strong> volunteers, Village Health Sanitation & Nutrition Committees (VHSNC), and Rogi Kalyan Samitis (RKS) for decentralized health management.</p>
-                </div>
-                <div class="glass-panel p-5 rounded-3xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                    <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3">
-                        <i class="fa-solid fa-coins text-lg"></i>
-                    </div>
-                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">Flexible Financing</h3>
-                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Provision of <strong>Untied Funds</strong> to Sub-Centres, PHCs, and CHCs, allowing local medical officers and committees to address immediate, localized healthcare infrastructure gaps.</p>
-                </div>
-                <div class="glass-panel p-5 rounded-3xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                    <div class="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center mb-3">
-                        <i class="fa-solid fa-network-wired text-lg"></i>
-                    </div>
-                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">Program Integration</h3>
-                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Moving from vertical disease control to horizontal integration. Programs like NTEP (TB), NVBDCP (Malaria/Dengue), and NLEP (Leprosy) are delivered comprehensively via primary care.</p>
-                </div>
-                <div class="glass-panel p-5 rounded-3xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                    <div class="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900/50 text-rose-600 dark:text-rose-400 flex items-center justify-center mb-3">
-                        <i class="fa-solid fa-person-breastfeeding text-lg"></i>
-                    </div>
-                    <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">RMNCH+A Approach</h3>
-                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Strategic continuum of care addressing Reproductive, Maternal, Newborn, Child, and Adolescent Health. Key drivers include <strong>JSY</strong> (cash transfers) and <strong>JSSK</strong> (free maternity services).</p>
-                </div>
-            </div>
-
-            <!-- National Health Programmes Section -->
-            <div class="pt-8 border-b border-slate-200 dark:border-slate-700 pb-2 mt-6">
-                <h3 class="text-xl font-bold font-display text-slate-900 dark:text-white">National Health Programmes under NHM</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Key communicable and non-communicable disease control programs implemented horizontally via the primary healthcare system.</p>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
-                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-lungs-virus text-rose-500"></i> NTEP</h4>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Tuberculosis Elimination</p>
-                    <p class="text-xs text-slate-600 dark:text-slate-300">Provides free diagnosis (CBNAAT/TrueNat) and DOTS treatment to eradicate TB by 2025.</p>
-                </div>
-                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
-                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-mosquito text-emerald-500"></i> NVBDCP</h4>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Vector Borne Disease Control</p>
-                    <p class="text-xs text-slate-600 dark:text-slate-300">Controls Malaria, Dengue, Chikungunya, Kala-azar, and Lymphatic Filariasis through vector management.</p>
-                </div>
-                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
-                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-heart-pulse text-blue-500"></i> NP-NCD</h4>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Programme for NCDs</p>
-                    <p class="text-xs text-slate-600 dark:text-slate-300">Screening and management of Cancer, Diabetes, Cardiovascular Diseases, and Stroke at HWCs.</p>
-                </div>
-                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
-                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-hands-bubbles text-amber-500"></i> NLEP</h4>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Leprosy Eradication</p>
-                    <p class="text-xs text-slate-600 dark:text-slate-300">Early case detection and free Multi-Drug Therapy (MDT) to reduce prevalence below 1/10,000.</p>
-                </div>
-                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
-                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-eye text-cyan-500"></i> NBCP & VI</h4>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Blindness Control</p>
-                    <p class="text-xs text-slate-600 dark:text-slate-300">Free cataract surgeries, school eye screening, and spectacle distribution to reduce blindness.</p>
-                </div>
-                <div class="glass-panel p-4 rounded-2xl border border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow">
-                    <h4 class="font-bold text-slate-800 dark:text-slate-200 text-sm mb-1 flex items-center gap-1.5"><i class="fa-solid fa-brain text-purple-500"></i> NMHP</h4>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2 font-semibold uppercase">National Mental Health Programme</p>
-                    <p class="text-xs text-slate-600 dark:text-slate-300">Integration of mental healthcare with primary care, providing counseling and psychiatric drugs.</p>
-                </div>
-            </div>
-
-            <!-- Health Workers Cadre Row -->
+            <!-- Health Workers Cadre Row (Accordion Style for Space Saving) -->
             <div class="pt-6 border-b border-slate-200 dark:border-slate-700 pb-2">
-                <h3 class="text-xl font-bold font-display text-slate-900 dark:text-white">Health Worker Cadres, Criteria & Detailed Roles</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Detailed profiles of the frontline and clinical workforce driving the NHM, based on Indian Public Health Standards (IPHS) and K. Park guidelines.</p>
+                <h3 class="text-xl font-bold font-display text-slate-900 dark:text-white">Health Worker Cadres & Detailed Roles</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Detailed profiles of the frontline and clinical workforce driving the NHM.</p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- ASHA Card -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col h-full hover:shadow-md transition-shadow">
-                    <div class="flex items-start justify-between mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- ASHA Accordion -->
+                <details class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm group [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-4 cursor-pointer list-none select-none">
                         <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-xl shadow-inner">
+                            <div class="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center text-lg shadow-inner">
                                 <i class="fa-solid fa-person-dress"></i>
                             </div>
                             <div>
-                                <h4 class="text-lg font-black text-slate-800 dark:text-slate-100 leading-tight">ASHA</h4>
+                                <h4 class="text-base font-black text-slate-800 dark:text-slate-100 leading-tight">ASHA</h4>
                                 <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Accredited Social Health Activist</span>
                             </div>
                         </div>
-                        <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm">Tier 1</span>
-                    </div>
-                    <div class="space-y-4 flex-grow">
+                        <i class="fa-solid fa-chevron-down transition-transform group-open:rotate-180 text-slate-400"></i>
+                    </summary>
+                    <div class="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700 space-y-3">
                         <div>
                             <h5 class="text-xs font-bold text-pink-600 dark:text-pink-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-users"></i> Population & Criteria</h5>
-                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed"><strong>Norm:</strong> 1 per 1,000 population.<br><strong>Selection:</strong> Must be a woman resident of the village (married/widowed/divorced preferred), aged 25-45, formally educated up to at least 8th or 10th class.</p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300"><strong>Norm:</strong> 1 per 1,000 population. <strong>Selection:</strong> Must be a woman resident of the village, aged 25-45, formally educated up to at least 8th or 10th class.</p>
                         </div>
                         <div>
-                            <h5 class="text-xs font-bold text-pink-600 dark:text-pink-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-hand-holding-medical"></i> Role & Services Provided</h5>
+                            <h5 class="text-xs font-bold text-pink-600 dark:text-pink-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-hand-holding-medical"></i> Services Provided</h5>
                             <ul class="text-[11px] text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
-                                <li>Acts as a bridge between the community and the public health system.</li>
-                                <li>Mobilizes community for ANC/PNC, immunization, and family planning.</li>
-                                <li>Escorts pregnant women for institutional deliveries (ensuring JSY benefits).</li>
-                                <li><strong>Depot Holder:</strong> Distributes ORS, Iron Folic Acid (IFA), chloroquine, oral pills, and condoms at the village level.</li>
-                                <li>Acts as a DOTS (Tuberculosis treatment) provider directly to patients.</li>
+                                <li>Bridge between community and public health system.</li>
+                                <li>Mobilizes community for ANC/PNC, immunization.</li>
+                                <li>Escorts pregnant women for institutional deliveries.</li>
+                                <li><strong>Depot Holder:</strong> Distributes ORS, IFA, oral pills, condoms.</li>
                             </ul>
                         </div>
                     </div>
-                </div>
+                </details>
 
-                <!-- AWW Card -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col h-full hover:shadow-md transition-shadow">
-                    <div class="flex items-start justify-between mb-4">
+                <!-- AWW Accordion -->
+                <details class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm group [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-4 cursor-pointer list-none select-none">
                         <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-xl shadow-inner">
+                            <div class="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center text-lg shadow-inner">
                                 <i class="fa-solid fa-child-reaching"></i>
                             </div>
                             <div>
-                                <h4 class="text-lg font-black text-slate-800 dark:text-slate-100 leading-tight">AWW</h4>
+                                <h4 class="text-base font-black text-slate-800 dark:text-slate-100 leading-tight">AWW</h4>
                                 <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Anganwadi Worker</span>
                             </div>
                         </div>
-                        <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm">Tier 1</span>
-                    </div>
-                    <div class="space-y-4 flex-grow">
+                        <i class="fa-solid fa-chevron-down transition-transform group-open:rotate-180 text-slate-400"></i>
+                    </summary>
+                    <div class="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700 space-y-3">
                         <div>
                             <h5 class="text-xs font-bold text-orange-600 dark:text-orange-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-users"></i> Population & Criteria</h5>
-                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed"><strong>Norm:</strong> 1 per 400-800 population (Plains), 1 per 300-800 (Tribal).<br><strong>Selection:</strong> Local female resident, working under the ICDS (Integrated Child Development Services) scheme of WCD Ministry.</p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300"><strong>Norm:</strong> 1 per 400-800 pop. <strong>Selection:</strong> Local female resident working under ICDS scheme.</p>
                         </div>
                         <div>
-                            <h5 class="text-xs font-bold text-orange-600 dark:text-orange-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-hand-holding-medical"></i> Role & Services Provided</h5>
+                            <h5 class="text-xs font-bold text-orange-600 dark:text-orange-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-hand-holding-medical"></i> Services Provided</h5>
                             <ul class="text-[11px] text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
-                                <li>Manages the Anganwadi Centre focusing on child care and maternal nutrition.</li>
-                                <li><strong>Services:</strong> Provides supplementary nutrition to pregnant/lactating mothers and children under 6.</li>
-                                <li>Conducts growth monitoring to detect Severe Acute Malnutrition (SAM).</li>
-                                <li>Provides non-formal pre-school education (ages 3-6).</li>
-                                <li>Organizes monthly Village Health and Nutrition Days (VHNDs) alongside ANM & ASHA.</li>
+                                <li>Manages Anganwadi Centre for child care & maternal nutrition.</li>
+                                <li>Supplementary nutrition to pregnant/lactating mothers & kids < 6.</li>
+                                <li>Growth monitoring to detect Severe Acute Malnutrition (SAM).</li>
+                                <li>Organizes monthly Village Health and Nutrition Days (VHNDs).</li>
                             </ul>
                         </div>
                     </div>
-                </div>
+                </details>
 
-                <!-- ANM Card -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col h-full hover:shadow-md transition-shadow">
-                    <div class="flex items-start justify-between mb-4">
+                <!-- ANM Accordion -->
+                <details class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm group [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-4 cursor-pointer list-none select-none">
                         <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl shadow-inner">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg shadow-inner">
                                 <i class="fa-solid fa-user-nurse"></i>
                             </div>
                             <div>
-                                <h4 class="text-lg font-black text-slate-800 dark:text-slate-100 leading-tight">ANM / MPHW(F)</h4>
+                                <h4 class="text-base font-black text-slate-800 dark:text-slate-100 leading-tight">ANM / MPHW(F)</h4>
                                 <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Auxiliary Nurse Midwife</span>
                             </div>
                         </div>
-                        <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm">Tier 2</span>
-                    </div>
-                    <div class="space-y-4 flex-grow">
+                        <i class="fa-solid fa-chevron-down transition-transform group-open:rotate-180 text-slate-400"></i>
+                    </summary>
+                    <div class="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700 space-y-3">
                         <div>
                             <h5 class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-users"></i> Population & Criteria</h5>
-                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed"><strong>Norm:</strong> 1 per 5,000 population (Plains), 1 per 3,000 (Tribal).<br><strong>Selection:</strong> 10+2 pass with 2-year ANM training course, registered with the State Nursing Council.</p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300"><strong>Norm:</strong> 1 per 5,000 pop (Plains), 1 per 3,000 (Tribal). <strong>Selection:</strong> 10+2 pass with 2-year ANM training, registered with Nursing Council.</p>
                         </div>
                         <div>
-                            <h5 class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-hand-holding-medical"></i> Role & Services Provided</h5>
+                            <h5 class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-hand-holding-medical"></i> Services Provided</h5>
                             <ul class="text-[11px] text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
-                                <li>Core frontline clinical worker at the Sub-Centre (Ayushman Arogya Mandir) level.</li>
-                                <li><strong>Services:</strong> Administers the Universal Immunization Programme (UIP).</li>
-                                <li>Conducts Antenatal Care (ANC) and Postnatal Care (PNC) checkups.</li>
-                                <li>Provides family planning services (IUD insertions, OCP distribution).</li>
-                                <li>Handles disease surveillance, vital events registration (births/deaths), and minor ailment treatment.</li>
+                                <li>Core clinical worker at the Sub-Centre level.</li>
+                                <li>Administers Universal Immunization Programme (UIP).</li>
+                                <li>Conducts Antenatal Care (ANC) and Postnatal Care (PNC).</li>
+                                <li>Provides family planning services (IUD, OCP).</li>
                             </ul>
                         </div>
                     </div>
-                </div>
+                </details>
 
-                <!-- CHO Card -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col h-full hover:shadow-md transition-shadow">
-                    <div class="flex items-start justify-between mb-4">
+                <!-- CHO Accordion -->
+                <details class="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm group [&_summary::-webkit-details-marker]:hidden">
+                    <summary class="flex items-center justify-between p-4 cursor-pointer list-none select-none">
                         <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-xl shadow-inner">
+                            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center text-lg shadow-inner">
                                 <i class="fa-solid fa-laptop-medical"></i>
                             </div>
                             <div>
-                                <h4 class="text-lg font-black text-slate-800 dark:text-slate-100 leading-tight">CHO / MLHP</h4>
+                                <h4 class="text-base font-black text-slate-800 dark:text-slate-100 leading-tight">CHO / MLHP</h4>
                                 <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Community Health Officer</span>
                             </div>
                         </div>
-                        <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm">Tier 2</span>
-                    </div>
-                    <div class="space-y-4 flex-grow">
+                        <i class="fa-solid fa-chevron-down transition-transform group-open:rotate-180 text-slate-400"></i>
+                    </summary>
+                    <div class="px-4 pb-4 pt-2 border-t border-slate-100 dark:border-slate-700 space-y-3">
                         <div>
                             <h5 class="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-users"></i> Population & Criteria</h5>
-                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed"><strong>Norm:</strong> 1 per Sub-Centre (Ayushman Arogya Mandir).<br><strong>Selection:</strong> B.Sc Nursing / Post Basic B.Sc Nursing / B.A.M.S. graduate with an integrated Certificate Programme in Community Health (CPCH).</p>
+                            <p class="text-xs text-slate-600 dark:text-slate-300"><strong>Norm:</strong> 1 per Sub-Centre. <strong>Selection:</strong> B.Sc Nursing/BAMS with CPCH certificate.</p>
                         </div>
                         <div>
-                            <h5 class="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-hand-holding-medical"></i> Role & Services Provided</h5>
+                            <h5 class="text-xs font-bold text-blue-600 dark:text-blue-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-hand-holding-medical"></i> Services Provided</h5>
                             <ul class="text-[11px] text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
-                                <li>Clinical lead and administrator for the primary health care team at the HWC.</li>
-                                <li><strong>Services:</strong> Population-based screening for Non-Communicable Diseases (NCDs) like Hypertension, Diabetes, and Cancers (Oral/Breast/Cervical).</li>
+                                <li>Clinical lead and administrator for primary care team at HWC.</li>
+                                <li>Screening for Non-Communicable Diseases (NCDs).</li>
                                 <li>Dispenses prescribed allopathic medicines for chronic diseases.</li>
-                                <li>Conducts tele-consultations using the <strong>e-Sanjeevani</strong> portal with PHC/District doctors for advanced care.</li>
+                                <li>Conducts tele-consultations using e-Sanjeevani portal.</li>
                             </ul>
                         </div>
                     </div>
-                </div>
-
-                <!-- MO Card -->
-                <div class="bg-white dark:bg-slate-800 p-5 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col h-full lg:col-span-2 hover:shadow-md transition-shadow">
-                    <div class="flex items-start justify-between mb-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl shadow-inner">
-                                <i class="fa-solid fa-stethoscope"></i>
-                            </div>
-                            <div>
-                                <h4 class="text-lg font-black text-slate-800 dark:text-slate-100 leading-tight">Medical Officer (MO)</h4>
-                                <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">PHC Head / Civil Assistant Surgeon</span>
-                            </div>
-                        </div>
-                        <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[10px] font-bold rounded-lg border border-slate-200 dark:border-slate-600 shadow-sm">Tier 3</span>
-                    </div>
-                    <div class="space-y-4 flex-grow grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        <div>
-                            <h5 class="text-xs font-bold text-purple-600 dark:text-purple-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-users"></i> Population & Criteria</h5>
-                            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed"><strong>Norm:</strong> 1 per Primary Health Centre (30,000 population in plains, 20,000 in tribal/hilly areas).<br><strong>Selection:</strong> Must hold an MBBS degree and be registered with the State/National Medical Council. Acts as the medical captain of the rural health team.</p>
-                        </div>
-                        <div>
-                            <h5 class="text-xs font-bold text-purple-600 dark:text-purple-400 mb-1 flex items-center gap-1.5"><i class="fa-solid fa-hand-holding-medical"></i> Role & Services Provided</h5>
-                            <ul class="text-[11px] text-slate-600 dark:text-slate-300 space-y-1 list-disc pl-4">
-                                <li>Clinical head providing essential Outpatient (OPD) and Inpatient (IPD) curative care.</li>
-                                <li>Manages basic obstetric emergencies and conducts normal institutional deliveries.</li>
-                                <li>Supervises National Disease Control Programmes (TB, Malaria, Leprosy) at the sector level.</li>
-                                <li>Administers the PHC, manages Untied Funds via Rogi Kalyan Samiti (RKS), and guides the CHO and ANM teams.</li>
-                                <li>Performs minor surgeries and Medical Termination of Pregnancy (MTP) where authorized and equipped.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                </details>
             </div>
 
             <!-- IPHS Full Criteria Table -->
@@ -568,146 +438,113 @@
                 </table>
             </div>
 
-            <!-- OFFICIAL MAP PDF BUTTON (3D Styled) -->
-            <div class="flex justify-center w-full pt-4 pb-2">
+            <!-- PDF Map Button Button -->
+            <div class="pt-8 pb-4 flex justify-center">
                 <a href="https://drive.google.com/file/d/1xtVHRVmkNDamf4ImZ9oh63okgOpYhlt-/view?usp=sharing" target="_blank" rel="noopener noreferrer" 
-                   class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold rounded-2xl border-b-4 border-slate-300 dark:border-slate-900 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 active:border-b-0 active:translate-y-1 transition-all w-full sm:w-auto">
-                    <i class="fa-regular fa-file-pdf text-xl text-rose-500"></i>
-                    <span class="tracking-wide uppercase text-sm">Health Center Map of VZM</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-50 ml-1"></i>
+                   class="btn-3d group inline-flex items-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-700 rounded-2xl font-bold font-display tracking-wide shadow-xl shadow-emerald-500/30">
+                    <i class="fa-solid fa-map-location-dot text-2xl group-hover:scale-110 transition-transform"></i>
+                    <span>HEALTH CENTER MAP OF VZM</span>
                 </a>
             </div>
 
-            <!-- PROJECT BY TEAM SECTION -->
-            <div class="pt-6 pb-2 text-center">
-                <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">Project By</h3>
-                <button id="openTeamModal" class="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-sm text-slate-700 dark:text-slate-300 font-bold text-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors mx-auto">
-                    <i class="fa-solid fa-users-rectangle text-brand-500 text-lg"></i> COMMUNITE MEDICINE PROJECT GMCVZM
+            <!-- Project Team Button -->
+            <div class="pt-4 pb-4 text-center">
+                <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-4">Project By</h3>
+                <button onclick="document.getElementById('teamModal').classList.remove('hidden')" class="inline-flex items-center justify-between px-6 py-3 font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:shadow-md transition-all gap-3">
+                    <span class="flex items-center gap-2"><i class="fa-solid fa-users-rectangle text-brand-500"></i> View Team Members</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-slate-400 text-[10px]"></i>
                 </button>
             </div>
 
-            <!-- QUESTIONS ABOUT NHM (NESTED ACCORDION FAQ SECTION) -->
-            <div id="nhm-faq" class="pb-8 px-4 sm:px-0 max-w-4xl mx-auto">
-                <details class="group bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-black/20 overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
-                    <summary class="flex items-center justify-between p-5 md:p-6 cursor-pointer select-none bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-700/80 transition-colors">
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl shadow-inner shrink-0">
-                                <i class="fa-solid fa-circle-question"></i>
-                            </div>
-                            <div>
-                                <h2 class="text-xl font-extrabold font-display text-slate-900 dark:text-white">Questions about NHM</h2>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Frequently asked questions regarding mission goals, funding, and components.</p>
-                            </div>
+            <!-- FAQs Section -->
+            <div class="pt-6 pb-12">
+                <details class="bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-slate-200 dark:border-slate-700 group [&_summary::-webkit-details-marker]:hidden overflow-hidden">
+                    <summary class="flex items-center justify-between p-5 cursor-pointer list-none select-none bg-slate-50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-circle-question text-2xl text-emerald-500"></i>
+                            <h3 class="text-lg font-bold font-display text-slate-900 dark:text-white">Questions about NHM</h3>
                         </div>
-                        <div class="w-8 h-8 shrink-0 flex items-center justify-center rounded-full bg-white dark:bg-slate-700 text-slate-500 shadow-sm border border-slate-200 dark:border-slate-600 group-open:rotate-180 transition-transform">
-                            <i class="fa-solid fa-chevron-down text-sm"></i>
-                        </div>
+                        <i class="fa-solid fa-chevron-down transition-transform group-open:rotate-180 text-slate-500 text-lg"></i>
                     </summary>
-                    
-                    <div class="p-4 md:p-6 border-t border-slate-200 dark:border-slate-700 space-y-3 bg-slate-50/30 dark:bg-slate-900/25">
-                        <!-- FAQ 1 -->
-                        <details class="group/faq bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
-                            <summary class="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 pr-4">What is the National Health Mission (NHM)?</h4>
-                                <div class="w-6 h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 group-open/faq:rotate-180 transition-transform">
-                                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                                </div>
-                            </summary>
-                            <div class="p-4 pt-0 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
-                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">The National Health Mission (NHM) is an umbrella programme of the Government of India, established in 2013 under the Ministry of Health and Family Welfare. It incorporates the National Rural Health Mission (NRHM, 2005) and the National Urban Health Mission (NUHM, 2013) to provide universal, equitable, and high-quality healthcare services.</p>
-                            </div>
-                        </details>
-
-                        <!-- FAQ 2 -->
-                        <details class="group/faq bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
-                            <summary class="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 pr-4">What are the major components of the NHM?</h4>
-                                <div class="w-6 h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 group-open/faq:rotate-180 transition-transform">
-                                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                                </div>
-                            </summary>
-                            <div class="p-4 pt-0 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
-                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">The NHM comprises four main components:<br><br>1. <strong>NRHM:</strong> National Rural Health Mission.<br>2. <strong>NUHM:</strong> National Urban Health Mission.<br>3. <strong>Tertiary Care Programmes:</strong> Upgrading healthcare infrastructure.<br>4. <strong>Human Resources for Health:</strong> Enhancing medical education and the healthcare workforce.</p>
-                            </div>
-                        </details>
-
-                        <!-- FAQ 3 -->
-                        <details class="group/faq bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
-                            <summary class="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 pr-4">What is the funding pattern of the NHM?</h4>
-                                <div class="w-6 h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 group-open/faq:rotate-180 transition-transform">
-                                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                                </div>
-                            </summary>
-                            <div class="p-4 pt-0 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
-                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">NHM is a Centrally Sponsored Scheme (CSS) with the following funding pattern between Central and State governments:<br>• <strong>60:40</strong> for general category states.<br>• <strong>90:10</strong> for North-Eastern and Himalayan States.<br>• <strong>100%</strong> central funding for Union Territories without a legislature.</p>
-                            </div>
-                        </details>
+                    <div class="p-4 space-y-3 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
                         
-                        <!-- FAQ 4 -->
-                        <details class="group/faq bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
-                            <summary class="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 pr-4">What are the main goals and targets of the NHM?</h4>
-                                <div class="w-6 h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 group-open/faq:rotate-180 transition-transform">
-                                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                                </div>
+                        <!-- Nested FAQ 1 -->
+                        <details class="group/faq bg-slate-50 dark:bg-slate-700/30 rounded-xl border border-slate-100 dark:border-slate-700 [&_summary::-webkit-details-marker]:hidden">
+                            <summary class="flex items-center justify-between p-3 cursor-pointer list-none select-none text-sm font-bold text-slate-800 dark:text-slate-200">
+                                What is the National Health Mission (NHM)?
+                                <i class="fa-solid fa-plus transition-transform group-open/faq:rotate-45 text-slate-400 text-xs"></i>
                             </summary>
-                            <div class="p-4 pt-0 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
-                                <ul class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed list-disc pl-4 space-y-1">
-                                    <li>Reduce Maternal Mortality Rate (MMR) to 70/100,000 live births.</li>
-                                    <li>Reduce Infant Mortality Rate (IMR) to 25/1000 live births.</li>
-                                    <li>Reduce Total Fertility Rate (TFR) to 2.1.</li>
-                                    <li>Prevent and reduce anaemia in women aged 15-49 years.</li>
-                                    <li>Eradicate communicable diseases like Leprosy, Kala-Azar, and Lymphatic Filariasis.</li>
-                                </ul>
+                            <div class="px-3 pb-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-700/50 pt-2 mt-1">
+                                The National Health Mission (NHM) is an umbrella programme of the Government of India, established in 2013 under the Ministry of Health and Family Welfare. It incorporates the National Rural Health Mission (NRHM) and the National Urban Health Mission (NUHM) to provide universal, equitable, and high-quality health care services for everyone, with particular emphasis on maternal, child, and adolescent health.
                             </div>
                         </details>
 
-                        <!-- FAQ 5 -->
-                        <details class="group/faq bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden transition-all [&_summary::-webkit-details-marker]:hidden">
-                            <summary class="flex items-center justify-between p-4 cursor-pointer select-none hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                                <h4 class="text-sm font-bold text-slate-800 dark:text-slate-200 pr-4">What are the major initiatives launched under NHM?</h4>
-                                <div class="w-6 h-6 shrink-0 flex items-center justify-center rounded-full bg-slate-100 dark:bg-slate-700 text-slate-500 group-open/faq:rotate-180 transition-transform">
-                                    <i class="fa-solid fa-chevron-down text-xs"></i>
-                                </div>
+                        <!-- Nested FAQ 2 -->
+                        <details class="group/faq bg-slate-50 dark:bg-slate-700/30 rounded-xl border border-slate-100 dark:border-slate-700 [&_summary::-webkit-details-marker]:hidden">
+                            <summary class="flex items-center justify-between p-3 cursor-pointer list-none select-none text-sm font-bold text-slate-800 dark:text-slate-200">
+                                What are the main components of NHM?
+                                <i class="fa-solid fa-plus transition-transform group-open/faq:rotate-45 text-slate-400 text-xs"></i>
                             </summary>
-                            <div class="p-4 pt-0 border-t border-slate-100 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/50">
-                                <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">Key initiatives include:<br>• <strong>ASHA:</strong> Accredited Social Health Activists acting as village-level volunteers.<br>• <strong>JSY & JSSK:</strong> Janani Suraksha Yojana and Janani Shishu Suraksha Karyakram for safe, cashless institutional deliveries.<br>• <strong>Rogi Kalyan Samiti (RKS):</strong> Hospital management committees.<br>• <strong>RBSK:</strong> Rashtriya Bal Swasthya Karyakram for child health screening.<br>• <strong>Ayushman Arogya Mandirs:</strong> Upgraded centers providing comprehensive primary care.</p>
+                            <div class="px-3 pb-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-700/50 pt-2 mt-1">
+                                The core focus areas of the mission are Reproductive, Maternal, Neonatal, Child and Adolescent Health (RMNCH+A); Health Systems Strengthening; Non-Communicable Diseases (NCDs); and Communicable Diseases (National Disease Control Programmes).
+                            </div>
+                        </details>
+
+                        <!-- Nested FAQ 3 -->
+                        <details class="group/faq bg-slate-50 dark:bg-slate-700/30 rounded-xl border border-slate-100 dark:border-slate-700 [&_summary::-webkit-details-marker]:hidden">
+                            <summary class="flex items-center justify-between p-3 cursor-pointer list-none select-none text-sm font-bold text-slate-800 dark:text-slate-200">
+                                How is the NHM funded?
+                                <i class="fa-solid fa-plus transition-transform group-open/faq:rotate-45 text-slate-400 text-xs"></i>
+                            </summary>
+                            <div class="px-3 pb-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-700/50 pt-2 mt-1">
+                                It is a centrally sponsored scheme. The funding pattern typically involves the Central Government contributing 60% of the funds and the State Governments contributing 40%. For North Eastern and hilly states, the ratio is 90:10.
+                            </div>
+                        </details>
+
+                        <!-- Nested FAQ 4 -->
+                        <details class="group/faq bg-slate-50 dark:bg-slate-700/30 rounded-xl border border-slate-100 dark:border-slate-700 [&_summary::-webkit-details-marker]:hidden">
+                            <summary class="flex items-center justify-between p-3 cursor-pointer list-none select-none text-sm font-bold text-slate-800 dark:text-slate-200">
+                                What are the major goals of NHM?
+                                <i class="fa-solid fa-plus transition-transform group-open/faq:rotate-45 text-slate-400 text-xs"></i>
+                            </summary>
+                            <div class="px-3 pb-3 text-xs text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-100 dark:border-slate-700/50 pt-2 mt-1">
+                                Major targets include reducing Infant Mortality Rate (IMR) to less than 25/1000 live births, Maternal Mortality Ratio (MMR) to less than 70/100,000, achieving a Total Fertility Rate (TFR) of 2.1, and eradicating diseases like Leprosy, Kala-Azar, and Lymphatic Filariasis.
                             </div>
                         </details>
                     </div>
                 </details>
             </div>
         </section>
-
     </main>
 
-    <!-- TEAM MODAL WITHOUT SCROLL -->
-    <div id="teamModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300">
-        <div class="bg-white dark:bg-slate-800 rounded-3xl p-5 md:p-6 max-w-md w-full mx-4 shadow-2xl border border-slate-200 dark:border-slate-700 transform scale-95 transition-transform duration-300 relative" id="teamModalContent">
-            <button id="closeTeamModal" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-500 hover:text-slate-800 dark:hover:text-white transition-colors">
-                <i class="fa-solid fa-xmark text-sm"></i>
-            </button>
-            <div class="flex items-center gap-3 mb-1">
-                <div class="w-9 h-9 rounded-xl bg-brand-100 dark:bg-brand-900/50 text-brand-600 dark:text-brand-400 flex items-center justify-center text-base">
-                    <i class="fa-solid fa-users-rectangle"></i>
-                </div>
-                <h3 class="text-lg font-bold font-display text-slate-900 dark:text-white">Project Team Members</h3>
+    <!-- Team Members Modal -->
+    <div id="teamModal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm transition-opacity">
+        <div class="bg-white dark:bg-slate-800 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden animate-fade-in border border-slate-200 dark:border-slate-700">
+            <div class="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                <h3 class="font-bold font-display text-lg text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <i class="fa-solid fa-users-rectangle text-brand-500"></i> Team Members
+                </h3>
+                <button onclick="document.getElementById('teamModal').classList.add('hidden')" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300 hover:bg-red-100 hover:text-red-600 transition-colors">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
             </div>
-            <p class="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-3 uppercase tracking-wider">COMMUNITE MEDICINE PROJECT GMCVZM</p>
-            <div>
-                <ul class="grid grid-cols-1 gap-1 text-[11px] font-medium text-slate-700 dark:text-slate-300 text-left">
-                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">61. KUPPILI LEENA PATTNAIK</li>
-                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">62. LANKADA VARUN KUMAR</li>
-                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">63. MADDILA SIVAKRISHNA</li>
-                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">64. MADDIMSETTY SUBHASH</li>
-                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">65. MADETI GITANJALI</li>
-                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">66. MANDALA ROHITH</li>
-                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">67. MANTHRI SUKESH KARTHEKEYA</li>
-                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">68. MEESALA SHARMILA RANI</li>
-                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">69. MOHAMMAD NABEEL KHAN</li>
-                    <li class="py-1 px-2 bg-slate-50 dark:bg-slate-900/40 rounded">70. MOULVI GUFRAN</li>
+            <!-- Scroll constraint removed. Items packed cleanly to fit exactly. -->
+            <div class="p-4">
+                <ul class="text-sm font-medium text-slate-700 dark:text-slate-300 space-y-2.5">
+                    <li class="flex items-center gap-3"><span class="w-6 h-6 rounded bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center text-xs font-bold">61</span> KUPPILI LEENA PATTNAIK</li>
+                    <li class="flex items-center gap-3"><span class="w-6 h-6 rounded bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center text-xs font-bold">62</span> LANKADA VARUN KUMAR</li>
+                    <li class="flex items-center gap-3"><span class="w-6 h-6 rounded bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center text-xs font-bold">63</span> MADDILA SIVAKRISHNA</li>
+                    <li class="flex items-center gap-3"><span class="w-6 h-6 rounded bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center text-xs font-bold">64</span> MADDIMSETTY SUBHASH</li>
+                    <li class="flex items-center gap-3"><span class="w-6 h-6 rounded bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center text-xs font-bold">65</span> MADETI GITANJALI</li>
+                    <li class="flex items-center gap-3"><span class="w-6 h-6 rounded bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center text-xs font-bold">66</span> MANDALA ROHITH</li>
+                    <li class="flex items-center gap-3"><span class="w-6 h-6 rounded bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center text-xs font-bold">67</span> MANTHRI SUKESH KARTHEKEYA</li>
+                    <li class="flex items-center gap-3"><span class="w-6 h-6 rounded bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center text-xs font-bold">68</span> MEESALA SHARMILA RANI</li>
+                    <li class="flex items-center gap-3"><span class="w-6 h-6 rounded bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center text-xs font-bold">69</span> MOHAMMAD NABEEL KHAN</li>
+                    <li class="flex items-center gap-3"><span class="w-6 h-6 rounded bg-brand-100 dark:bg-brand-900/50 text-brand-600 flex items-center justify-center text-xs font-bold">70</span> MOULVI GUFRAN</li>
                 </ul>
+            </div>
+            <div class="p-4 border-t border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-center">
+                <span class="text-[10px] uppercase font-bold text-slate-400">COMMUNITY MEDICINE PROJECT GMCVZM</span>
             </div>
         </div>
     </div>
@@ -717,7 +554,7 @@
         // Massive District-Wide Expansion of Vizianagaram Facilities
         const RAW_TREE_DATA = {
             id: "tier5_ggh",
-            name: "GMC & GGH Vizianagaram",
+            name: "GMC & GGH Vizianagaram", 
             tier: "Tier 5: Tertiary Apex Care",
             tierLevel: 5,
             badge: "bg-purple-100 text-purple-700 border-purple-200",
@@ -726,16 +563,24 @@
             services: ["Level-III Trauma", "ICU/NICU", "CT/MRI Diagnostics", "Complex Surgeries"],
             criteria: "Mandate: 1 Teaching Hospital per district. Actual: Serves ~2.45 Million population as apex referral center.",
             children: [
+                // Urban Direct Referrals (Bypass Node positioned at Tier 4)
                 {
-                    name: "Maharajah District Hospital",
+                    name: "Urban Bypass Pathway",
                     tierLevel: 4,
+                    tier: "Tier 4: Direct Urban Referral",
+                    badge: "bg-slate-100 text-slate-700 border-slate-300",
+                    address: "Vizianagaram Core Urban Limits",
+                    workers: ["Direct Route (No CHC Staffing)"],
+                    services: ["Direct Secondary & Tertiary Care Access"],
+                    criteria: "Bypass Pathway: Because these facilities are located within the core urban limits of Vizianagaram town, patients bypass the rural Community Health Centre (CHC) tier. They are instead referred straight to the apex district facility (GMC & GGH Vizianagaram).",
                     children: [
-                        { name: "PHC KL Puram", tierLevel: 3 },
+                        { name: "UPHC K.L. Puram", tierLevel: 3 },
                         { name: "PHC Rakodu", tierLevel: 3 },
                         { name: "UPHC Jonnaguddi", tierLevel: 3 },
                         { name: "UPHC Phool Baugh", tierLevel: 3 }
                     ]
                 },
+                // Regular CHC Hierarchies
                 {
                     name: "CHC Bobbili",
                     tierLevel: 4,
@@ -822,15 +667,17 @@
         // Function to strictly enforce K. Park textbook norms (1 CHC -> 4 PHC -> 6 SC)
         function enforceTextbookNorms(node) {
             if (node.tierLevel === 4) {
+                // CHCs/Area Hospitals must have exactly 4 PHCs (Bypass Node already has exactly 4)
                 if (!node.children) node.children = [];
                 node.children = node.children.slice(0, 4);
                 let count = node.children.length;
                 for (let i = count; i < 4; i++) {
-                    let baseName = node.name.replace(/(CHC |Area Hospital |Maharajah District Hospital )/, '').trim();
+                    let baseName = node.name.replace(/(CHC |Area Hospital )/, '').trim();
                     node.children.push({ name: `PHC ${baseName} Sector ${i+1}`, tierLevel: 3 });
                 }
             }
             if (node.tierLevel === 3) {
+                // PHCs must have exactly 6 Sub-Centres
                 if (!node.children) node.children = [];
                 node.children = node.children.slice(0, 6);
                 let count = node.children.length;
@@ -844,13 +691,15 @@
             }
         }
 
+        // Apply strict mathematical hierarchy to map
         enforceTextbookNorms(RAW_TREE_DATA);
 
+        // Helper function to auto-populate workers, services, addresses, and criteria for hundreds of nodes
         function populateTreeData(node) {
             if (!node.id) node.id = node.name.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase() + '_' + Math.random().toString(36).substr(2, 5);
             
             if (node.tierLevel === 4) {
-                node.badge = "bg-blue-100 text-blue-700 border-blue-200";
+                if(!node.badge) node.badge = "bg-blue-100 text-blue-700 border-blue-200";
                 if(!node.workers) node.workers = ["Specialists", "CAS Medical Officers", "Staff Nurses"];
                 if(!node.services) node.services = ["30-100 Beds", "Secondary Wards", "Ultrasound", "Emergency Operations", "Blood Storage"];
                 if(!node.tier) node.tier = node.name.includes("District") ? "Tier 4: District Hospital" : (node.name.includes("Area") ? "Tier 4: Area Hospital" : "Tier 4: Community Health Centre");
@@ -864,6 +713,7 @@
                 if(!node.criteria) node.criteria = "Mandate: 1 PHC per 30,000 pop (Exactly 4 PHCs per CHC).";
                 if(!node.address) node.address = node.name.replace("PHC ", "").replace("UPHC ", "") + " Village/Ward";
                 
+                // For Urban PHCs that don't have sub-centers manually listed, add generic UPHC wards
                 if(!node.children && node.name.includes("UPHC")) {
                     node.children = [{
                         name: "Ward " + node.name.replace("UPHC ", ""),
@@ -876,6 +726,7 @@
                         criteria: "Mandate: 1 per Urban Slum/Ward."
                     }];
                 }
+
             } else if (node.tierLevel === 2) {
                 node.badge = "bg-orange-100 text-orange-700 border-orange-200";
                 if(!node.workers) node.workers = ["CHO / MLHP", "ANM", "MPHW (Male)"];
@@ -884,6 +735,7 @@
                 if(!node.criteria) node.criteria = "Mandate: 1 SC per 5,000 pop (Exactly 6 SCs per PHC).";
                 if(!node.address) node.address = node.name.replace("SC ", "") + " Village Secretariat";
                 
+                // Add a default Level 1 Anganwadi child to every Level 2 node to make the tree perfectly complete
                 if(!node.children) {
                     node.children = [{
                         name: "AWC " + node.name.replace("SC ", "").replace("Ward ", ""),
@@ -913,16 +765,17 @@
         const HEALTH_TREE_DATA = RAW_TREE_DATA;
 
         let currentLayout = "horizontal";
+        let isExpanded = false;
         let svg, g, gLinks, gNodes, zoom, root;
         let selectedNode = null;
-        let isExpanded = false;
 
+        // Colors mapping by tier level
         const tierColors = {
-            5: { stroke: "#8b5cf6", fill: "#f3e8ff" },
-            4: { stroke: "#3b82f6", fill: "#dbeafe" },
-            3: { stroke: "#10b981", fill: "#d1fae5" },
-            2: { stroke: "#f97316", fill: "#ffedd5" },
-            1: { stroke: "#ec4899", fill: "#fce7f3" }
+            5: { stroke: "#8b5cf6", fill: "#f3e8ff" }, // Purple
+            4: { stroke: "#3b82f6", fill: "#dbeafe" }, // Blue
+            3: { stroke: "#10b981", fill: "#d1fae5" }, // Emerald
+            2: { stroke: "#f97316", fill: "#ffedd5" }, // Orange
+            1: { stroke: "#ec4899", fill: "#fce7f3" }  // Pink
         };
 
         function initD3Tree() {
@@ -933,7 +786,7 @@
             svg.selectAll("*").remove();
 
             zoom = d3.zoom()
-                .scaleExtent([0.2, 3])
+                .scaleExtent([0.1, 3])
                 .on("zoom", (event) => {
                     if (g) g.attr("transform", event.transform);
                 });
@@ -947,22 +800,25 @@
             root.x0 = 0;
             root.y0 = 0;
 
+            // Start with nodes collapsed beyond level 2 (Hides SC and AWC by default)
             root.descendants().forEach(d => {
-                if (d.depth > 1 && d.children) {
+                // Collapse logic: if depth >= 2 (PHCs and lower), hide their children
+                if (d.depth >= 2 && d.children) {
                     d._children = d.children;
                     d.children = null;
                 }
             });
 
-            isExpanded = false;
-            updateExpandButtonState();
             updateTree(root);
+            
+            // Allow SVG to calculate dimensions then reset view
             setTimeout(resetView, 100);
         }
 
         function updateTree(source) {
             if (!g || !root) return;
 
+            // Dimensions for node spacing
             const nodeWidth = currentLayout === "horizontal" ? 240 : 140;
             const nodeHeight = currentLayout === "horizontal" ? 60 : 180;
 
@@ -972,10 +828,12 @@
             const nodes = treeData.descendants();
             const links = treeData.links();
 
+            // Depth scaling
             nodes.forEach(d => {
                 d.y = d.depth * (currentLayout === "horizontal" ? 260 : 160);
             });
 
+            // -- LINKS --
             const link = gLinks.selectAll("path.link")
                 .data(links, d => d.target.data.id);
 
@@ -1000,6 +858,7 @@
                 })
                 .remove();
 
+            // -- NODES --
             const node = gNodes.selectAll("g.node")
                 .data(nodes, d => d.data.id);
 
@@ -1034,7 +893,8 @@
                 .attr("x", d => currentLayout === "horizontal" ? (d.children || d._children ? -16 : 16) : 0)
                 .attr("y", d => currentLayout === "vertical" ? 22 : 0)
                 .attr("text-anchor", d => currentLayout === "horizontal" ? (d.children || d._children ? "end" : "start") : "middle")
-                .text(d => d.data.name);
+                // Make the Bypass Node label blank, but everything else standard
+                .text(d => d.data.name === "Urban Bypass Pathway" ? " " : d.data.name);
 
             nodeEnter.append("text")
                 .attr("class", "node-sub")
@@ -1042,7 +902,7 @@
                 .attr("x", d => currentLayout === "horizontal" ? (d.children || d._children ? -16 : 16) : 0)
                 .attr("y", d => currentLayout === "vertical" ? 22 : 0)
                 .attr("text-anchor", d => currentLayout === "horizontal" ? (d.children || d._children ? "end" : "start") : "middle")
-                .text(d => d.data.tier.split(':')[0]);
+                .text(d => d.data.tier.split(':')[0]); // Shorten tier text
 
             const nodeUpdate = nodeEnter.merge(node);
             nodeUpdate.transition().duration(400)
@@ -1101,7 +961,7 @@
             const scaleY = (height - padY * 2) / (treeHeight || 1);
 
             let scale = Math.min(scaleX, scaleY);
-            scale = Math.max(0.4, Math.min(1, scale));
+            scale = Math.max(0.3, Math.min(1, scale));
 
             const initialX = currentLayout === "horizontal" ? 80 : (width/2) - (minY * scale);
             const initialY = currentLayout === "horizontal" ? (height / 2) - (((minX + maxX) / 2) * scale) : 60;
@@ -1130,6 +990,7 @@
                     d._children.forEach(collapse);
                 }
             }
+            // Keep root expanded, collapse children
             if (root.children) {
                 root.children.forEach(collapse);
             }
@@ -1137,15 +998,20 @@
             setTimeout(resetView, 450);
         }
 
-        function updateExpandButtonState() {
-            const expandBtnText = document.getElementById("expandBtnText");
-            const expandIcon = document.getElementById("expandIcon");
-            if (isExpanded) {
-                if (expandBtnText) expandBtnText.textContent = "Collapse All";
-                if (expandIcon) expandIcon.className = "fa-solid fa-compress";
+        function toggleExpandCollapse() {
+            const icon = document.getElementById("expandIcon");
+            const text = document.getElementById("expandToggleText");
+            
+            if (!isExpanded) {
+                expandAll();
+                icon.className = "fa-solid fa-compress";
+                text.textContent = "Collapse";
+                isExpanded = true;
             } else {
-                if (expandBtnText) expandBtnText.textContent = "Expand All";
-                if (expandIcon) expandIcon.className = "fa-solid fa-expand";
+                collapseAll();
+                icon.className = "fa-solid fa-expand";
+                text.textContent = "Expand All";
+                isExpanded = false;
             }
         }
 
@@ -1153,6 +1019,7 @@
             if (!d || !d.data) return;
             selectedNode = d;
 
+            // Highlight node
             if (gNodes) {
                 gNodes.selectAll("g.node circle")
                     .attr("stroke-width", node => selectedNode.data.id === node.data.id ? 4 : 2.5)
@@ -1160,6 +1027,8 @@
             }
 
             const data = d.data;
+
+            // Update DOM Elements
             const badgeEl = document.getElementById("inspectBadge");
             if (badgeEl) {
                 badgeEl.textContent = data.tier || "Facility Level";
@@ -1170,10 +1039,20 @@
             document.getElementById("inspectAddress").textContent = data.address || "Address not specified";
             document.getElementById("inspectCriteria").textContent = data.criteria || "Standard NHM/IPHS norms apply.";
 
+            // Dynamically generate Google Maps search URL
             const mapBtn = document.getElementById("inspectMapBtn");
             if (mapBtn) {
-                const searchQuery = encodeURIComponent(`${data.name}, ${data.address || ''}, Vizianagaram, Andhra Pradesh, India`);
-                mapBtn.href = `https://www.google.com/maps/search/?api=1&query=${searchQuery}`;
+                // Don't search if it's the bypass node
+                if(data.name === "Urban Bypass Pathway") {
+                    mapBtn.href = "#";
+                    mapBtn.style.pointerEvents = "none";
+                    mapBtn.style.opacity = "0.5";
+                } else {
+                    const searchQuery = encodeURIComponent(`${data.name}, ${data.address || ''}, Vizianagaram, Andhra Pradesh, India`);
+                    mapBtn.href = `https://www.google.com/maps/search/?api=1&query=${searchQuery}`;
+                    mapBtn.style.pointerEvents = "auto";
+                    mapBtn.style.opacity = "1";
+                }
             }
 
             const workersList = document.getElementById("inspectWorkers");
@@ -1209,6 +1088,7 @@
             document.getElementById("inspectorEmptyState").classList.add("hidden");
             document.getElementById("inspectorContent").classList.remove("hidden");
 
+            // Automatically and smoothly scroll the details panel into view when a node is tapped
             setTimeout(() => {
                 const drawer = document.getElementById("detailDrawer");
                 if (drawer) {
@@ -1228,9 +1108,7 @@
             }
 
             const term = query.toLowerCase().trim();
-            expandAll();
-            isExpanded = true;
-            updateExpandButtonState();
+            if(!isExpanded) toggleExpandCollapse();
 
             if (gNodes) {
                 gNodes.selectAll("g.node").each(function(d) {
@@ -1240,7 +1118,7 @@
                     if (matchName || matchTier) {
                         d3.select(this).select("circle")
                             .attr("stroke-width", 5)
-                            .attr("stroke", "#f59e0b");
+                            .attr("stroke", "#f59e0b"); // Highlight amber
                     } else {
                         d3.select(this).select("circle")
                             .attr("stroke-width", d => selectedNode?.data.id === d.data.id ? 4 : 2.5)
@@ -1253,18 +1131,9 @@
         document.addEventListener("DOMContentLoaded", () => {
             initD3Tree();
 
+            // Button Listeners
             document.getElementById("resetZoomBtn")?.addEventListener("click", resetView);
-            
-            document.getElementById("expandAllBtn")?.addEventListener("click", () => {
-                if (!isExpanded) {
-                    expandAll();
-                    isExpanded = true;
-                } else {
-                    collapseAll();
-                    isExpanded = false;
-                }
-                updateExpandButtonState();
-            });
+            document.getElementById("expandToggleBtn")?.addEventListener("click", toggleExpandCollapse);
 
             document.getElementById("layoutToggleBtn")?.addEventListener("click", () => {
                 currentLayout = currentLayout === "horizontal" ? "vertical" : "horizontal";
@@ -1273,38 +1142,18 @@
                 setTimeout(resetView, 100);
             });
 
+            // Search
             const searchInput = document.getElementById("searchInput");
             if (searchInput) {
                 searchInput.addEventListener("input", (e) => handleSearch(e.target.value));
             }
 
+            // Dark Mode
             document.getElementById("themeToggle")?.addEventListener("click", () => {
                 document.documentElement.classList.toggle("dark");
             });
 
-            const openModalBtn = document.getElementById('openTeamModal');
-            const closeModalBtn = document.getElementById('closeTeamModal');
-            const teamModal = document.getElementById('teamModal');
-            const teamModalContent = document.getElementById('teamModalContent');
-
-            function toggleModal(show) {
-                if (show) {
-                    teamModal.classList.remove('opacity-0', 'pointer-events-none');
-                    teamModalContent.classList.remove('scale-95');
-                    teamModalContent.classList.add('scale-100');
-                } else {
-                    teamModal.classList.add('opacity-0', 'pointer-events-none');
-                    teamModalContent.classList.remove('scale-100');
-                    teamModalContent.classList.add('scale-95');
-                }
-            }
-
-            openModalBtn?.addEventListener('click', () => toggleModal(true));
-            closeModalBtn?.addEventListener('click', () => toggleModal(false));
-            teamModal?.addEventListener('click', (e) => {
-                if (e.target === teamModal) toggleModal(false);
-            });
-
+            // Responsive resizing
             let resizeTimer;
             window.addEventListener("resize", () => {
                 clearTimeout(resizeTimer);
